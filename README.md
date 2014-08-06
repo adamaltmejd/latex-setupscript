@@ -1,4 +1,4 @@
 latex-setupscript
 =================
 
-Custom LaTeX setup script for loading preamble and abbrevations in different documents i write.
+Custom LaTeX setup script for loading preamble and abbreviations in different documents that I write.
