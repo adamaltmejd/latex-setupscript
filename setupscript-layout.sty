@@ -1,0 +1,97 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{setupscript-layout}[2014/08/06 Layout options for setupscript]
+
+% Close \sqrt{}'s, use \oldsqrt for old behavior
+\LetLtxMacro{\oldsqrt}{\sqrt}
+\renewcommand{\sqrt}[1][\ ]{%
+  \def\DHLindex{#1}\mathpalette\DHLhksqrt}
+\def\DHLhksqrt#1#2{%
+  \setbox0=\hbox{$#1\oldsqrt[\DHLindex]{#2\,}$}\dimen0=\ht0
+  \advance\dimen0-0.2\ht0
+  \setbox2=\hbox{\vrule height\ht0 depth -\dimen0}%
+  {\box0\lower0.71pt\box2}}
+
+% Math definitions/environments
+\mdfdefinestyle{theoremstyle}{%
+    linecolor = black,
+    linewidth = 1pt,
+    innerleftmargin = 5pt,
+    innerrightmargin = 5pt,
+    innertopmargin = 0pt,
+    leftmargin = 0pt,
+    rightmargin = 0pt,
+    frametitlerule = true,
+    innertopmargin = \topskip,
+    middlelinewidth = 1pt,
+    ntheorem = true
+}
+\theorempreskip{0pt}
+\theorempostskip{0pt}
+\newcounter{mycounter}[section]
+\mdtheorem[style=theoremstyle]{proposition}[mycounter]{Proposition}[section]
+\mdtheorem[style=theoremstyle]{theorem}[mycounter]{Theorem}[section]
+\mdtheorem[style=theoremstyle]{definition}[mycounter]{Definition}[section]
+\mdtheorem[style=theoremstyle]{corollary}[mycounter]{Corollary}[section]
+\mdtheorem[style=theoremstyle]{lemma}[mycounter]{Lemma}[section]
+\crefformat{definition}{definition~#2#1#3}
+\crefformat{theorem}{theorem~#2#1#3}
+\crefformat{corollary}{corollary~#2#1#3}
+\crefformat{lemma}{lemma~#2#1#3}
+
+
+%% ##################### MEMOIR-SPECIFIC LAYOUT ##############################
+\if@memoir
+
+% Parskip (not recommended)
+\setlength{\parindent}{0pt}
+\nonzeroparskip
+\abnormalparskip{8pt}
+%
+
+\counterwithout{footnote}{chapter} % continous numbering of footnotes
+
+% % Headstyles for chapter mode (not article)
+% \headstyles{ntglike}
+% \chapterstyle{dash}
+% \setlength{\beforechapskip}{25pt} % Remove extra spacing before chapter
+% \setlength{\midchapskip}{5pt}
+% \setlength{\afterchapskip}{15pt}
+% \renewcommand*{\chapnamefont}{\huge\bfseries}
+% %
+
+% % Page style
+% \makepagestyle{mypagestyle}
+%     \setheadfoot{30pt}{15pt}
+%     \makeevenhead{mypagestyle}{}{}{}% Even page header
+%     \makeoddhead{mypagestyle}{}{}{}% Odd page header
+%     \makeevenfoot{mypagestyle}{}{\thepage}{}% Even page footer
+%     \makeoddfoot{mypagestyle}{}{\thepage}{}% Odd page footer
+% \pagestyle{mypagestyle}
+% \aliaspagestyle{title}{mypagestyle}
+
+% Heading styles
+
+% \makechapterstyle{adamschapter}{
+%     \renewcommand{\printchaptername}{}
+%     \renewcommand{\chapternamenum}{}
+%     \renewcommand{\chapnumfont}{\normalfont\Huge\bfseries}
+%     \renewcommand{\printchapternum}{\chapnumfont \thechapter.\space}
+%     \renewcommand{\afterchapternum}{}
+% }
+% %\chapterstyle{dash}
+% \chapterstyle{adamschapter}
+% \setlength{\beforechapskip}{25pt} % Remove extra spacing before chapter
+% \setlength{\midchapskip}{0pt}
+% \setlength{\afterchapskip}{15pt}
+
+% % \makeheadstyles{adamsheads}{
+% %     \renewcommand*{\chapnamefont}{\normalfont\huge\bfseries}
+% %     \renewcommand*{\chapnumfont}{\normalfont\huge\bfseries}
+% %     \renewcommand*{\chaptitlefont}{\normalfont\Huge\bfseries}
+% % }
+% %\headstyles{default}
+% \headstyles{adams}
+
+\fi
+
+\endinput

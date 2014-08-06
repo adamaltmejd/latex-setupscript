@@ -1,0 +1,82 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{setupscript-syntax}[2014/08/06 Syntax highlighting options for setupscript]
+
+%% ##################### SYNTAX HIGHLIGHTING #################################
+
+\definecolor{mygreen}{RGB}{28,172,0}
+\definecolor{mymagenta}{RGB}{170,55,241}
+% \lstset{language = Matlab,
+%     keywords = {break,case,catch,continue,else,elseif,end,for,function,
+%        global,if,otherwise,persistent,return,switch,try,while},
+%     basicstyle = \footnotesize,
+%     keywordstyle = \color{blue},
+%     identifierstyle = \color{black},
+%     stringstyle = \color{mymagenta},
+%     commentstyle = \color{mygreen},
+%     showspaces = false,           % Show spaces
+%     showstringspaces = false,     % Show spaces in strings
+%     showtabs = false,             % Show tabs
+%     tabsize = 2,                % Size of tabs
+%     captionpos = b,             % Caption position
+%     numbers = left,             % Line numbers position
+%     numberstyle = {\footnotesize \color{gray}},
+%     stepnumber = 1,
+%     numbersep = 8pt,
+%     breaklines = true,            % Line breaks
+%     breakatwhitespace=false     % Break only on white space
+% }
+\lstdefinelanguage{Stata}{%
+    morekeywords = {},
+    sensitive = false,
+    morecomment = [l]{///},
+    morecomment = [l]{*},
+    morecomment = [s]{/*}{*/},
+    morestring = [b]",
+}
+\lstset{language = Stata,
+    keywords = {break,case,catch,continue,else,elseif,end,for,function,
+       global,if,otherwise,persistent,return,switch,try,while},
+    basicstyle = \footnotesize,
+    keywordstyle = \color{blue},
+    identifierstyle = \color{black},
+    stringstyle = \color{mymagenta},
+    commentstyle = \color{mygreen},
+    showspaces = false,           % Show spaces
+    showstringspaces = false,     % Show spaces in strings
+    showtabs = false,             % Show tabs
+    tabsize = 2,                % Size of tabs
+    captionpos = b,             % Caption position
+    numbers = left,             % Line numbers position
+    numberstyle = {\footnotesize \color{gray}},
+    stepnumber = 1,
+    numbersep = 8pt,
+    breaklines = true,            % Line breaks
+    breakatwhitespace=false     % Break only on white space
+}
+% \lstloadlanguages{R}
+% \lstdefinelanguage{myR}[]{R}{%
+%     morekeywords={acf,ar,arima,arima.sim,colMeans,colSums,is.na,is.null, mapply,ms,na.rm,nlmin,replicate,row.names,rowMeans,rowSums,seasonal, sys.time,system.time,ts.plot,which.max,which.min},
+%     deletekeywords={Call},
+%     alsoletter={.\%},
+%     alsoother={:_\$},
+%     basicstyle = \small\ttfamily,
+%     keywordstyle = \color{blue},
+%     identifierstyle = \color{black},
+%     stringstyle = \color{mymagenta},
+%     commentstyle = \color{black}\textsl,
+%     extendedchars=true,
+%     showspaces = false,             % Show spaces
+%     showstringspaces = false,       % Show spaces in strings
+%     showtabs = false,               % Show tabs
+%     tabsize = 2,                    % Size of tabs
+%     captionpos = b,                 % Caption position
+%     breaklines = true,              % Line breaks
+%     breakatwhitespace=false,        % Break only on white space
+%     numbers = none,                 % Line numbers position
+%     numberstyle = {\tiny \color{gray}},
+%     stepnumber = 1,
+%     numbersep = 5pt,
+%     index=[1][keywords]
+% }
+
+\endinput

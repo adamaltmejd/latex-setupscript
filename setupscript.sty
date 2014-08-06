@@ -3,16 +3,178 @@
 %   ##############################
 %
 % Custom package for loading preamble and abbrevations into my LaTeX documents.
-% Compiles with pdfLaTeX and biber, with TeX Live 2014
+% Compiles with pdfLaTeX and biber (if bibliography option), with TeX Live 2014
 %
 % ### OPTIONS
-%     - Document classes: memoir, tufte, beamer
-%
+%     - [memoir], [tufte] document class-specific setups
+%     - [bibliography] loads biblatex and formats bibliography
 %
 % ### TO DO
-% TO DO:
-% - Add options for bibliography, loading remote global bibliography file
 % - Add more options for specific title page layouts
-% - - Example: option for no new page after title
-%      (needs changes in definitions for titlingpage, front/mainmatter)
+% - Add tufte-specific settings
+% - Add Beamer support
 
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{setupscript}[2014/08/06 Adam Altmejd's custom setup script]
+
+%% ##################### CLASS SPECIFIC PACKAGES #############################
+
+\newif\if@memoir\@memoirfalse
+\DeclareOption{memoir}{
+  \@memoirtrue
+}
+\newif\if@tufte\@tuftefalse
+\DeclareOption{tufte}{
+  \@tuftetrue
+}
+\newif\if@bibliography\@bibliographyfalse
+\DeclareOption{bibliography}{
+  \@bibliographytrue
+}
+
+\ProcessOptions\relax
+
+%% ###########################################################################
+%% ##################### PREAMBLE ############################################
+%% ###########################################################################
+
+\RequirePackage{fixltx2e}
+
+%% ##################### Typography ##########################################
+
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage[kerning]{microtype} % Better looking text
+\RequirePackage[babel]{csquotes} % Better looking quotes
+\RequirePackage[american]{babel} % Language control
+\RequirePackage{lmodern} % Latin modern font
+%\RequirePackage[a-1b]{pdfx} % A-1b standards compilant pdf
+
+\if@memoir
+    \RequirePackage[hyperref]{xcolor} % Needs to be loaded before listings
+\fi
+
+%% ##################### MATH / CODE #########################################
+
+\RequirePackage{amsmath,amssymb,amsfonts,mathrsfs,accents}
+\RequirePackage{listings}       % Used to \input code files
+\RequirePackage[amsmath,amsthm,framed,thmmarks,hyperref]{ntheorem}
+\RequirePackage[framemethod=tikz]{mdframed}
+
+% \RequirePackage{letltxmacro} % To run macros (better \sqrt{})
+% \mathchardef\hyphenmathcode=\mathcode`\- % fix listings/breqn error
+% \RequirePackage{breqn} % Break equation over lines using dmath
+
+%% ##################### GRAPHICS ############################################
+
+\RequirePackage{graphicx,tikz,pgfplots}
+\usetikzlibrary{backgrounds,trees,positioning,arrows,calc}
+\pgfplotsset{compat=newest}
+\DeclareGraphicsExtensions{.pdf,.png,.jpg,.eps}
+
+\if@memoir
+    \RequirePackage[section]{placeins} % Creates \FloatBarrier at every new section.
+\fi
+
+%% ##################### BIBLIOGRAPHY ########################################
+
+\if@bibliography
+    \RequirePackage[
+        backend=biber,
+        style=authoryear-comp, % or icomp if ibid
+        %style=authortitle-icomp, %chicago-like
+        natbib=true,
+        sortlocale=en_US,
+        maxcitenames=2,
+        mincitenames=1,
+        maxbibnames=4,
+        minbibnames=3,
+        doi=false,
+        url=false,
+        isbn=false,
+        eprint=false,
+        dashed=true,                % Will output dash instead of repeated author
+        hyperref=true,
+        backref=false,              % Backref can be useful
+    ]{biblatex}                     % BIBLATEX Bibliography
+
+% For chicago biblatex this could be used?
+%    \RequirePackage[
+%        notes,
+%        %strict,
+%        isbn=false,
+%        hyperref=true,
+%        backref=false,
+%        bibencoding=utf8,
+%        backend=biber
+%    ]{biblatex-chicago}
+\fi
+
+%% ##################### OTHER USEFUL STUFF ##################################
+
+%\RequirePackage{pdflscape}      % Loads external pdfs in landscape mode
+%\RequirePackage{lineno}         % Puts line numbers on everything
+%\RequirePackage{lipsum}         % Lorem ipsum generation with \lipsum[]
+%\RequirePackage{standalone}     % Ignores preambles from input documents
+\RequirePackage{todonotes}      % Todo notes with for example \todo
+\RequirePackage{aliascnt}       % Alias counters
+
+%% ##################### REFERENCES (Loaded last) ############################
+
+% Hyperref should always be loaded in the end.
+% If loading standards compilant use options [pdftex,pdfa]
+\RequirePackage{hyperref}
+\hypersetup{
+    unicode=true,
+    colorlinks=true,
+    citecolor=blue,
+    filecolor=blue,
+    linkcolor=blue,
+    linkbordercolor=blue,
+    urlcolor=blue,
+    bookmarksnumbered=true,
+    bookmarksopen=true,
+    breaklinks=true,
+}
+\hypersetup{pdfauthor={Adam Altmejd}}
+
+% But cleveref/hypcap need to be loaded after hyperref
+\RequirePackage[
+    nameinlink,
+    noabbrev
+    ]{cleveref}                 % Creates clever references using \cref.
+\RequirePackage[all]{hypcap}    % Makes hyperrefs refer to top of figures.
+
+%% ##################### LOAD SETTINGS #######################################
+
+\usepackage{setupscript-layout}
+\usepackage{setupscript-syntax}
+\usepackage{setupscript-abbreviations}
+
+%% ##################### DEBUG (last) ########################################
+
+% Fix bug with listings and breqn
+\let\origlstlisting=\lstlisting
+\let\endoriglstlisting=\endlstlisting
+\renewenvironment{lstlisting}
+    {\mathcode`\-=\hyphenmathcode
+     \everymath{}\mathsurround=0pt\origlstlisting}
+    {\endoriglstlisting}
+
+\if@memoir
+    % Use this if memoir style is set to article - however doesn't work well with appendix
+    \renewcommand{\thesection}{\arabic{section}}
+    \renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+    \makeatletter
+    \let\l@subsection\l@section
+    \let\l@section\l@chapter
+    \makeatother
+    \setsecnumdepth{subsection} % Numbering subsections
+\fi
+
+\crefname{secinapp}{appendix}{appendices} % Create reference to appendix sections
+\Crefname{secinapp}{Appendix}{Appendices}
+
+%% ##################### END #################################################
+
+\endinput
