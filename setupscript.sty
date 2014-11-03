@@ -6,13 +6,13 @@
 % Compiles with pdfLaTeX and biber (if bibliography option), with TeX Live 2014
 %
 % ### OPTIONS
-%     - [memoir], [tufte] document class-specific setups
+%     - [memoir], [tufte], [beamer] document class-specific setups
 %     - [bibliography] loads biblatex and formats bibliography
 %
 % ### TO DO
 % - Add more options for specific title page layouts
 % - Add tufte-specific settings
-% - Add Beamer support
+% - fix crefs for theorems
 
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{setupscript}[2014/08/06 Adam Altmejd's custom setup script]
@@ -26,6 +26,10 @@
 \newif\if@tufte\@tuftefalse
 \DeclareOption{tufte}{
   \@tuftetrue
+}
+\newif\if@beamer\@beamerfalse
+\DeclareOption{beamer}{
+  \@beamertrue
 }
 \newif\if@bibliography\@bibliographyfalse
 \DeclareOption{bibliography}{
@@ -43,12 +47,19 @@
 %% ##################### Typography ##########################################
 
 \RequirePackage[T1]{fontenc}
-\RequirePackage[utf8]{inputenc}
+\RequirePackage[utf8x]{inputenc}
 \RequirePackage[kerning]{microtype} % Better looking text
 \RequirePackage[babel]{csquotes} % Better looking quotes
+\RequirePackage{booktabs} % Better looking tables
 \RequirePackage[american]{babel} % Language control
-\RequirePackage{lmodern} % Latin modern font
 %\RequirePackage[a-1b]{pdfx} % A-1b standards compilant pdf
+
+\if@beamer
+    \RequirePackage{libertine} % Linux libertine font for PdfLaTeX
+    \else
+        \RequirePackage{lmodern} % Latin modern font
+\fi
+
 
 \if@memoir
     \RequirePackage[hyperref]{xcolor} % Needs to be loaded before listings
@@ -58,22 +69,28 @@
 
 \RequirePackage{amsmath,amssymb,amsfonts,mathrsfs,accents,gauss}
 \RequirePackage{listings}       % Used to \input code files
-\RequirePackage[amsmath,amsthm,framed,thmmarks,hyperref]{ntheorem}
-\RequirePackage[framemethod=tikz]{mdframed}
-
-% \RequirePackage{letltxmacro} % To run macros (better \sqrt{})
-% \mathchardef\hyphenmathcode=\mathcode`\- % fix listings/breqn error
-% \RequirePackage{breqn} % Break equation over lines using dmath
+\if@beamer\else
+    \RequirePackage[amsmath,amsthm,framed,thmmarks,hyperref]{ntheorem} % using thref ntheorem needs to be loaded after babel, but thref does not work with cleveref
+    \RequirePackage[framemethod=tikz]{mdframed}
+\fi % Beamer automatically loads amsthm for theorems
 
 %% ##################### GRAPHICS ############################################
 
-\RequirePackage{graphicx,subfigure,tikz,pgfplots}
+\RequirePackage{graphicx,tikz,pgfplots}
 \usetikzlibrary{backgrounds,trees,positioning,arrows,calc}
 \pgfplotsset{compat=newest}
 \DeclareGraphicsExtensions{.pdf,.png,.jpg,.eps}
 
 \if@memoir
     \RequirePackage[section]{placeins} % Creates \FloatBarrier at every new section.
+\fi
+
+\if@tufte
+    % Subcaption stuff seems really buggy with tufte.
+    %\RequirePackage{subcaption} %instead of subfigure and subfig, however works poorly
+    %\captionsetup{compatibility=false}
+    %\RequirePackage{subfig}
+    %\RequirePackage[margin=10pt, font=small, labelfont=bf, hypcap=true]{caption}
 \fi
 
 %% ##################### BIBLIOGRAPHY ########################################
@@ -116,14 +133,14 @@
 %\RequirePackage{lineno}         % Puts line numbers on everything
 %\RequirePackage{lipsum}         % Lorem ipsum generation with \lipsum[]
 %\RequirePackage{standalone}     % Ignores preambles from input documents
-\RequirePackage{todonotes}      % Todo notes with for example \todo
-\RequirePackage{aliascnt}       % Alias counters
+\RequirePackage{todonotes}       % Todo notes with for example \todo
+\RequirePackage{aliascnt}        % Alias counters
 
 %% ##################### REFERENCES (Loaded last) ############################
 
 % Hyperref should always be loaded in the end.
 % If loading standards compilant use options [pdftex,pdfa]
-\RequirePackage{hyperref}
+\if@beamer\else\RequirePackage{hyperref}\fi % Beamer automatically loads hyperref
 \hypersetup{
     unicode=true,
     colorlinks=true,
@@ -143,7 +160,9 @@
     nameinlink,
     noabbrev
     ]{cleveref}                 % Creates clever references using \cref.
-\RequirePackage[all]{hypcap}    % Makes hyperrefs refer to top of figures.
+
+%hypcap is outdated, test with caption package (with hypcap=true) instead
+%\RequirePackage[all]{hypcap}    % Makes hyperrefs refer to top of figures.
 
 %% ##################### LOAD SETTINGS #######################################
 
