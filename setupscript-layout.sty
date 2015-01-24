@@ -4,47 +4,68 @@
 % Close \sqrt{}'s, use \oldsqrt for old behavior
 \LetLtxMacro{\oldsqrt}{\sqrt}
 \renewcommand{\sqrt}[1][\ ]{%
-  \def\DHLindex{#1}\mathpalette\DHLhksqrt}
+    \def\DHLindex{#1}\mathpalette\DHLhksqrt}
 \def\DHLhksqrt#1#2{%
-  \setbox0=\hbox{$#1\oldsqrt[\DHLindex]{#2\,}$}\dimen0=\ht0
-  \advance\dimen0-0.2\ht0
-  \setbox2=\hbox{\vrule height\ht0 depth -\dimen0}%
-  {\box0\lower0.71pt\box2}}
+    \setbox0=\hbox{$#1\oldsqrt[\DHLindex]{#2\,}$}\dimen0=\ht0
+    \advance\dimen0-0.2\ht0
+    \setbox2=\hbox{\vrule height\ht0 depth -\dimen0}%
+    {\box0\lower0.71pt\box2}}
 
 
 % Math definitions/environments, not for beamer
 \if@beamer\else
-  \mdfdefinestyle{theoremstyle}{%
-      linecolor = gray!20,
-      linewidth = 1pt,
-      innerleftmargin = 5pt,
-      innerrightmargin = 5pt,
-      innertopmargin = 0pt,
-      leftmargin = 0pt,
-      rightmargin = 0pt,
-      frametitlerule = true,
-      frametitlebackgroundcolor = gray!20,
-      innertopmargin = \topskip,
-      middlelinewidth = 1pt,
-      ntheorem = true,
-      nobreak = true
-  }
-  \theorempreskip{5pt}
-  \theorempostskip{10pt}
-  \newcounter{mycounter}[section]
-  %Example: \mdtheorem[<mdframed−options>]{<envname>}[<numberedlike>]{<caption>}[<within>]
-  \mdtheorem[style=theoremstyle]{proposition}[mycounter]{Proposition}[section]
-  \mdtheorem[style=theoremstyle]{theorem}[mycounter]{Theorem}[section]
-  \mdtheorem[style=theoremstyle]{definition}[mycounter]{Definition}[section]
-  \mdtheorem[style=theoremstyle]{corollary}[mycounter]{Corollary}[section]
-  \mdtheorem[style=theoremstyle]{lemma}[mycounter]{Lemma}[section]
-  \mdtheorem[style=theoremstyle]{remark}[mycounter]{Remark}[section]
-  %\crefformat{definition}{definition~#2#1#3}
-  %\crefformat{proposition}{proposition~#2#1#3}
-  %\crefformat{theorem}{theorem~#2#1#3}
-  %\crefformat{corollary}{corollary~#2#1#3}
-  %\crefformat{lemma}{lemma~#2#1#3}
-  %\crefformat{remark}{remark~#2#1#3}
+    % NON-FRAMED THEOREMS
+    \if@framedtheorem\else
+        \theoremstyle{plain}
+        \theoremheaderfont{\normalfont\bfseries}\theorembodyfont{\normalfont}
+        \theoremseparator{:}
+        \newtheorem{definition}{Definition}
+        \newtheorem{proposition}{Proposition}
+        \newtheorem{theorem}{Theorem}
+        \newtheorem{axiom}{Axiom}
+        \newtheorem{corollary}{Corollary}
+        \newtheorem{lemma}{Lemma}
+        \newtheorem{remark}{Remark}
+        %Proof
+        \theoremstyle{nonumberplain}
+        \newtheorem{proof}{Proof}
+        \theoremsymbol{\ensuremath{\blacksquare}}
+    \fi
+
+
+    % FRAMED THEOREMS
+    \if@framedtheorem
+    \mdfsetup{
+        framemethod=tikz,
+        ntheorem=true
+    }
+        \mdfdefinestyle{theoremstyle}{%
+            linecolor = gray!20,
+            linewidth = 1pt,
+            innerleftmargin = 5pt,
+            innerrightmargin = 5pt,
+            innertopmargin = 0pt,
+            leftmargin = 0pt,
+            rightmargin = 0pt,
+            frametitlerule = true,
+            frametitlebackgroundcolor = gray!20,
+            innertopmargin = \topskip,
+            middlelinewidth = 1pt,
+            ntheorem = true,
+            nobreak = true
+        }
+        \theorempreskip{5pt}
+        \theorempostskip{10pt}
+        %Example: \mdtheorem[<mdframed−options>]{<envname>}[<numberedlike>]{<caption>}[<within>]
+        \mdtheorem[style=theoremstyle]{proposition}{Proposition}[section]
+        \mdtheorem[style=theoremstyle]{proof}{Proof}[section]
+        \mdtheorem[style=theoremstyle]{theorem}{Theorem}[section]
+        \mdtheorem[style=theoremstyle]{definition}{Definition}[section]
+        \mdtheorem[style=theoremstyle]{axiom}{Axiom}[section]
+        \mdtheorem[style=theoremstyle]{corollary}{Corollary}[section]
+        \mdtheorem[style=theoremstyle]{lemma}{Lemma}[section]
+        \mdtheorem[style=theoremstyle]{remark}{Remark}[section]
+    \fi
 \fi
 
 

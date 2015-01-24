@@ -8,6 +8,7 @@
 % ### OPTIONS
 %     - [memoir], [tufte], [beamer] document class-specific setups
 %     - [bibliography] loads biblatex and formats bibliography
+%     - [framedtheorems] loads mdframed and styles for framed theorem envs
 %
 % ### TO DO
 % - Add more options for specific title page layouts
@@ -35,6 +36,10 @@
 \DeclareOption{bibliography}{
   \@bibliographytrue
 }
+\newif\if@framedtheorem\@framedtheoremfalse
+\DeclareOption{framedtheorem}{
+  \@framedtheoremtrue
+}
 
 \ProcessOptions\relax
 
@@ -46,18 +51,18 @@
 
 %% ##################### Typography ##########################################
 
-\RequirePackage[T1]{fontenc}
+\RequirePackage[T1]{fontenc} % Should be loaded before inputenc
 \RequirePackage[utf8]{inputenc} %utf8x should be avoided, does not work with biblatex
 \RequirePackage[kerning]{microtype} % Better looking text
 \RequirePackage[babel]{csquotes} % Better looking quotes
 \RequirePackage{booktabs} % Better looking tables
-\RequirePackage[american]{babel} % Language control
+\RequirePackage{babel} % Language control
 %\RequirePackage[a-1b]{pdfx} % A-1b standards compilant pdf
 
 \if@beamer
     \RequirePackage{libertine} % Linux libertine font for PdfLaTeX
     \else
-        \RequirePackage{lmodern} % Latin modern font
+    \RequirePackage{lmodern} % Latin modern font
 \fi
 
 
@@ -70,8 +75,10 @@
 \RequirePackage{amsmath,amssymb,amsfonts,mathrsfs,accents,gauss}
 \RequirePackage{listings}       % Used to \input code files
 \if@beamer\else
-    \RequirePackage[amsmath,amsthm,framed,thmmarks,hyperref]{ntheorem} % using thref ntheorem needs to be loaded after babel, but thref does not work with cleveref
-    \RequirePackage[framemethod=tikz]{mdframed}
+    \RequirePackage[amsmath,thmmarks,hyperref]{ntheorem}
+    \if@framedtheorem
+        \RequirePackage{mdframed} %options declared later
+    \fi
 \fi % Beamer automatically loads amsthm for theorems
 
 %% ##################### GRAPHICS ############################################
@@ -141,14 +148,15 @@
 % Hyperref should always be loaded in the end.
 % If loading standards compilant use options [pdftex,pdfa]
 \if@beamer\else\RequirePackage{hyperref}\fi % Beamer automatically loads hyperref
+\definecolor{myblue}{RGB}{100,110,150}
 \hypersetup{
     unicode=true,
     colorlinks=true,
-    citecolor=blue,
-    filecolor=blue,
-    linkcolor=blue,
-    linkbordercolor=blue,
-    urlcolor=blue,
+    citecolor=myblue,
+    filecolor=myblue,
+    linkcolor=myblue,
+    linkbordercolor=myblue,
+    urlcolor=myblue,
     bookmarksnumbered=true,
     bookmarksopen=true,
     breaklinks=true,
@@ -156,13 +164,24 @@
 \hypersetup{pdfauthor={Adam Altmejd}}
 
 % But cleveref/hypcap need to be loaded after hyperref
-\RequirePackage[
-    nameinlink,
-    noabbrev
-    ]{cleveref}                 % Creates clever references using \cref.
+%\RequirePackage[nameinlink,noabbrev]{cleveref}
+\RequirePackage{cleveref}
 
 %hypcap is outdated, test with caption package (with hypcap=true) instead
 %\RequirePackage[all]{hypcap}    % Makes hyperrefs refer to top of figures.
+\RequirePackage[hypcap=true,hypcapspace=0.5\baselineskip]{caption}
+\RequirePackage[hypcap=true]{subcaption}
+%\captionsetup{
+    %listformat=empty,
+    %tablename=Table,
+    %justification=justified,
+    %labelsep=colon,
+    %position=above,
+    %skip=\onelineskip,
+    %width=\linewidth,
+    %labelfont={small},
+    %font={small}
+%}
 
 %% ##################### LOAD SETTINGS #######################################
 
