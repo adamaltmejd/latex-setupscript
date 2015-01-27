@@ -5,14 +5,18 @@
 % Custom package for loading preamble and abbrevations into my LaTeX documents.
 % Compiles with pdfLaTeX and biber (if bibliography option), with TeX Live 2014
 %
+% ### USAGE
+%     - In your preamble specify:
+%     - \documentclass[<options>]{memoir/tufte/beamer}
+%     - \usepackage[<options>]{setupscript}
+%
 % ### OPTIONS
-%     - [memoir], [tufte], [beamer] document class-specific setups
+%     - REQUIRED: [memoir] or [tufte] or [beamer] document class-specific setups
 %     - [bibliography] loads biblatex and formats bibliography
 %     - [framedtheorems] loads mdframed and styles for framed theorem envs
 %
 % ### TO DO
 % - Add more options for specific title page layouts
-% - Add tufte-specific settings
 % - fix crefs for theorems
 
 \NeedsTeXFormat{LaTeX2e}
@@ -92,14 +96,6 @@
     \RequirePackage[section]{placeins} % Creates \FloatBarrier at every new section.
 \fi
 
-\if@tufte
-    % Subcaption stuff seems really buggy with tufte.
-    %\RequirePackage{subcaption} %instead of subfigure and subfig, however works poorly
-    %\captionsetup{compatibility=false}
-    %\RequirePackage{subfig}
-    %\RequirePackage[margin=10pt, font=small, labelfont=bf, hypcap=true]{caption}
-\fi
-
 %% ##################### BIBLIOGRAPHY ########################################
 
 \if@bibliography
@@ -109,10 +105,12 @@
         %style=authortitle-icomp, %chicago-like
         natbib=true,
         sortlocale=en_US,
+        maxnames=3,
+        minnames=1,
         maxcitenames=2,
         mincitenames=1,
-        maxbibnames=4,
-        minbibnames=3,
+        maxbibnames=5,
+        minbibnames=1,
         doi=false,
         url=false,
         isbn=false,
@@ -120,6 +118,9 @@
         dashed=true,                % Will output dash instead of repeated author
         hyperref=true,
         backref=false,              % Backref can be useful
+        useprefix=true,             % print "von" etc (biber only)
+        sorting=nyt,                % sort bibliography after name-year-title
+        sortcites=true,             % sort citations in text (when sep. by ",")
     ]{biblatex}                     % BIBLATEX Bibliography
 
 % For chicago biblatex this could be used?
@@ -170,7 +171,9 @@
 %hypcap is outdated, test with caption package (with hypcap=true) instead
 %\RequirePackage[all]{hypcap}    % Makes hyperrefs refer to top of figures.
 \RequirePackage[hypcap=true,hypcapspace=0.5\baselineskip]{caption}
-\RequirePackage[hypcap=true]{subcaption}
+\if@memoir %subcaption does not work with neither beamer nor tufte
+    \RequirePackage[hypcap=true]{subcaption}
+\fi
 %\captionsetup{
     %listformat=empty,
     %tablename=Table,
@@ -182,6 +185,13 @@
     %labelfont={small},
     %font={small}
 %}
+\if@tufte
+    % Subcaption stuff seems really buggy with tufte.
+    %\RequirePackage{subcaption} %instead of subfigure and subfig, however works poorly
+    %\captionsetup{compatibility=false}
+    %\RequirePackage{subfig}
+    %\RequirePackage[margin=10pt, font=small, labelfont=bf, hypcap=true]{caption}
+\fi
 
 %% ##################### LOAD SETTINGS #######################################
 
