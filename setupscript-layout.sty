@@ -58,14 +58,14 @@
         \theorempreskip{5pt}
         \theorempostskip{10pt}
         %Example: \mdtheorem[<mdframed−options>]{<envname>}[<numberedlike>]{<caption>}[<within>]
-        \mdtheorem[style=theoremstyle]{proposition}{Proposition}[section]
-        \mdtheorem[style=theoremstyle]{proof}{Proof}[section]
-        \mdtheorem[style=theoremstyle]{theorem}{Theorem}[section]
-        \mdtheorem[style=theoremstyle]{definition}{Definition}[section]
-        \mdtheorem[style=theoremstyle]{axiom}{Axiom}[section]
-        \mdtheorem[style=theoremstyle]{corollary}{Corollary}[section]
-        \mdtheorem[style=theoremstyle]{lemma}{Lemma}[section]
-        \mdtheorem[style=theoremstyle]{remark}{Remark}[section]
+        \mdtheorem[style=theoremstyle]{proposition}{Proposition}%[section]
+        \mdtheorem[style=theoremstyle]{proof}{Proof}%[section]
+        \mdtheorem[style=theoremstyle]{theorem}{Theorem}%[section]
+        \mdtheorem[style=theoremstyle]{definition}{Definition}%[section]
+        \mdtheorem[style=theoremstyle]{axiom}{Axiom}%[section]
+        \mdtheorem[style=theoremstyle]{corollary}{Corollary}%[section]
+        \mdtheorem[style=theoremstyle]{lemma}{Lemma}%[section]
+        \mdtheorem[style=theoremstyle]{remark}{Remark}%[section]
     \fi
 \fi
 
@@ -132,121 +132,127 @@
 %% ############################################################################
 \if@beamer
 
-\usetheme[height=0mm]{Rochester}
-\usecolortheme[RGB={71,98,176}]{structure}
-\useoutertheme[subsection=false]{miniframes}
-\useinnertheme{rectangles}
+    \usetheme[height=0mm]{Rochester}
+    \usecolortheme[RGB={71,98,176}]{structure}
+    \useoutertheme[subsection=false]{miniframes}
+    \useinnertheme{rectangles}
 
-\setbeamercovered{transparent}
-\beamertemplatenavigationsymbolsempty
+    \setbeamercovered{transparent}
+    \beamertemplatenavigationsymbolsempty
 
-\setbeamerfont{title like}{shape=\scshape}
-\setbeamerfont{frametitle}{shape=\scshape}
+    \setbeamerfont{title like}{shape=\scshape}
+    \setbeamerfont{frametitle}{shape=\scshape}
 
-% \setbeamercolor*{lower separation line head}{bg=black}
-% \setbeamercolor*{normal text}{fg=black,bg=white}
-% \setbeamercolor*{alerted text}{fg=red}
-% \setbeamercolor*{example text}{fg=black}
-% \setbeamercolor*{structure}{fg=black}
+    % \setbeamercolor*{lower separation line head}{bg=black}
+    % \setbeamercolor*{normal text}{fg=black,bg=white}
+    % \setbeamercolor*{alerted text}{fg=red}
+    % \setbeamercolor*{example text}{fg=black}
+    % \setbeamercolor*{structure}{fg=black}
 
-\setbeamercolor*{palette tertiary}{fg=black,bg=black!10}
-\setbeamercolor*{palette quaternary}{fg=black,bg=black!10}
+    \setbeamercolor*{palette tertiary}{fg=black,bg=black!10}
+    \setbeamercolor*{palette quaternary}{fg=black,bg=black!10}
 
-% Kind of bad for beamer!
-\RequirePackage{enumitem}               % Needed to easily change space between itemize and labels
-\setlist[itemize,1]{itemsep=1em}        % When using enumitem this is needed
-\setlist[itemize]{label=\scriptsize$\blacksquare$}
+    % Kind of bad for beamer!
+    \RequirePackage{enumitem}               % Needed to easily change space between itemize and labels
+    \setlist[itemize,1]{itemsep=1em}        % When using enumitem this is needed
+    \setlist[itemize]{label=\scriptsize$\blacksquare$}
 
-% This code makes miniframe signs be on same row as sections
-\usepackage{etoolbox}
-\makeatletter
-\patchcmd{\slideentry}{\advance\beamer@tempdim by -.05cm}{\advance\beamer@tempdim by\beamer@vboxoffset\advance\beamer@tempdim by\beamer@boxsize\advance\beamer@tempdim by 0.9\pgflinewidth}{}{}
-\patchcmd{\slideentry}{\kern\beamer@tempdim}{\advance\beamer@tempdim by 2pt\advance\beamer@tempdim by\wd\beamer@sectionbox\kern\beamer@tempdim}{}{}
-\makeatother
+    % This code makes miniframe signs be on same row as sections
+    \usepackage{etoolbox}
+    \makeatletter
+    \patchcmd{\slideentry}{\advance\beamer@tempdim by -.05cm}{\advance\beamer@tempdim by\beamer@vboxoffset\advance\beamer@tempdim by\beamer@boxsize\advance\beamer@tempdim by 0.9\pgflinewidth}{}{}
+    \patchcmd{\slideentry}{\kern\beamer@tempdim}{\advance\beamer@tempdim by 2pt\advance\beamer@tempdim by\wd\beamer@sectionbox\kern\beamer@tempdim}{}{}
+    \makeatother
 
-% % Definiert die headline
-% \setbeamertemplate{headline}
-% {
-% \includegraphics[width=0.15\paperwidth]{logopolito} % test logo
-% \begin{beamercolorbox}[wd=.85\paperwidth,right]{section in head/foot}
-%     \rule{0.85\paperwidth}{1pt}
-%     %Vertikaler Abstand
-%     \vskip10pt
-%     %Fügt die Standard-Navi ein (miniframes)
-%     \insertnavigation{0.85\paperwidth}
-%     \vskip8pt
-%     \rule{0.85\paperwidth}{0.5pt}
-%     \vskip27.5pt % same height of the example provided, but IMHO is too much
-%     \rule{0.85\paperwidth}{1pt}
-% \end{beamercolorbox}
-% }
+    % % Definiert die headline
+    % \setbeamertemplate{headline}
+    % {
+    % \includegraphics[width=0.15\paperwidth]{logopolito} % test logo
+    % \begin{beamercolorbox}[wd=.85\paperwidth,right]{section in head/foot}
+    %     \rule{0.85\paperwidth}{1pt}
+    %     %Vertikaler Abstand
+    %     \vskip10pt
+    %     %Fügt die Standard-Navi ein (miniframes)
+    %     \insertnavigation{0.85\paperwidth}
+    %     \vskip8pt
+    %     \rule{0.85\paperwidth}{0.5pt}
+    %     \vskip27.5pt % same height of the example provided, but IMHO is too much
+    %     \rule{0.85\paperwidth}{1pt}
+    % \end{beamercolorbox}
+    % }
 
-% % definition of the frametitle
-% \setbeamertemplate{frametitle}
-% {
-% \vskip-24pt % to shift up the frametitle
-% \hbox{
-%  \begin{beamercolorbox}[wd=.0675\textwidth]{} % left shift
-%  \end{beamercolorbox}
-%  \begin{beamercolorbox}[sep=4pt]{section in head/foot}
-%  \insertframetitle
-%  \end{beamercolorbox}
-%  }
-% }
+    % % definition of the frametitle
+    % \setbeamertemplate{frametitle}
+    % {
+    % \vskip-24pt % to shift up the frametitle
+    % \hbox{
+    %  \begin{beamercolorbox}[wd=.0675\textwidth]{} % left shift
+    %  \end{beamercolorbox}
+    %  \begin{beamercolorbox}[sep=4pt]{section in head/foot}
+    %  \insertframetitle
+    %  \end{beamercolorbox}
+    %  }
+    % }
 
-% \renewcommand{\(}{\begin{columns}}
-% \renewcommand{\)}{\end{columns}}
-% \newcommand{\<}[1]{\begin{column}{#1}}
-% \renewcommand{\>}{\end{column}}
+    % \renewcommand{\(}{\begin{columns}}
+    % \renewcommand{\)}{\end{columns}}
+    % \newcommand{\<}[1]{\begin{column}{#1}}
+    % \renewcommand{\>}{\end{column}}
 
-% Load TOC for section at start of every section
-\setbeamerfont{tocfont}{series=\bfseries,size=\Large}
-\AtBeginSection[]
-{
-  \begin{frame}
-    \frametitle{Outline}
-    \usebeamerfont{tocfont}
-    \tableofcontents[currentsection, sectionstyle=show/shaded, subsectionstyle=hide]
-  \end{frame}
-}
 
-% %% FOOTER
-% % \useoutertheme{infolines}
-% \beamertemplatenavigationsymbolsempty   % No navigation
-% % \setfootline{
-% %     \insertshortinstitute, \insertshortdate
-% %     \hfill slide \insertframenumber/\inserttotalframenumber
-% % }
+    % %% TOC
+    % Load TOC for section at start of every section
+    % \setbeamerfont{tocfont}{series=\bfseries,size=\Large}
+    % \AtBeginSection[]
+    % {
+    %   \begin{frame}<beamer>
+    %     \frametitle{Outline}
+    %     \usebeamerfont{tocfont}
+    %     \begin{multicols}{2}
+    %         \tableofcontents[currentsection, sectionstyle=show/shaded, subsectionstyle=hide]
+    %     \end{multicols}
+    %   \end{frame}
+    % }
+    % \addtocontents{toc}{\vskip -1cm}
 
-%     \setbeamertemplate{footline}
-%     {
-%       \leavevmode%
-%       \hbox{%
-%       \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
-%         \usebeamerfont{author in head/foot}\insertsection
-%       \end{beamercolorbox}%
-%       \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
-%         \usebeamerfont{title in head/foot}\insertsubsection
-%       \end{beamercolorbox}%
-%       \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
-%         \usebeamerfont{date in head/foot}\insertshortdate{}\hspace*{2em}
-%         \insertframenumber{} / \inserttotalframenumber\hspace*{2ex}
-%       \end{beamercolorbox}}%
-%       \vskip0pt%
-%     }
-%     \makeatother
 
-% % \setbeamertemplate{title page}
-% % {
-% %     %\pgfuseimage{toptitle}
-% %     \vskip0pt plus 1filll
-% %     \begin{centering}
-% %     {\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle}
-% %     \insertdate
-% %     \end{centering}
-% %     \vskip0pt plus 1filll
-% %     %\pgfuseimage{bottomtitle}
-% % }
+    % %% FOOTER
+    % % \useoutertheme{infolines}
+    % \beamertemplatenavigationsymbolsempty   % No navigation
+    % % \setfootline{
+    % %     \insertshortinstitute, \insertshortdate
+    % %     \hfill slide \insertframenumber/\inserttotalframenumber
+    % % }
+
+    %     \setbeamertemplate{footline}
+    %     {
+    %       \leavevmode%
+    %       \hbox{%
+    %       \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+    %         \usebeamerfont{author in head/foot}\insertsection
+    %       \end{beamercolorbox}%
+    %       \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+    %         \usebeamerfont{title in head/foot}\insertsubsection
+    %       \end{beamercolorbox}%
+    %       \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+    %         \usebeamerfont{date in head/foot}\insertshortdate{}\hspace*{2em}
+    %         \insertframenumber{} / \inserttotalframenumber\hspace*{2ex}
+    %       \end{beamercolorbox}}%
+    %       \vskip0pt%
+    %     }
+    %     \makeatother
+
+    % % \setbeamertemplate{title page}
+    % % {
+    % %     %\pgfuseimage{toptitle}
+    % %     \vskip0pt plus 1filll
+    % %     \begin{centering}
+    % %     {\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle}
+    % %     \insertdate
+    % %     \end{centering}
+    % %     \vskip0pt plus 1filll
+    % %     %\pgfuseimage{bottomtitle}
+    % % }
 
 
 \fi

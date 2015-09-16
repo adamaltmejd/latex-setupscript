@@ -13,7 +13,7 @@
 % ### OPTIONS
 %     - REQUIRED: [memoir] or [tufte] or [beamer] document class-specific setups
 %     - [bibliography] loads biblatex and formats bibliography
-%     - [framedtheorems] loads mdframed and styles for framed theorem envs
+%     - [framedtheorem] loads mdframed and styles for framed theorem envs
 %
 % ### TO DO
 % - Add more options for specific title page layouts
@@ -44,6 +44,10 @@
 \DeclareOption{framedtheorem}{
   \@framedtheoremtrue
 }
+\newif\if@knitr\@knitrfalse
+\DeclareOption{knitr}{
+  \@knitrtrue
+}
 
 \ProcessOptions\relax
 
@@ -51,7 +55,7 @@
 %% ##################### PREAMBLE ############################################
 %% ###########################################################################
 
-\RequirePackage{fixltx2e}
+%\RequirePackage{fixltx2e} % not required with texlive 2015
 
 %% ##################### Typography ##########################################
 
@@ -64,14 +68,19 @@
 %\RequirePackage[a-1b]{pdfx} % A-1b standards compilant pdf
 
 \if@beamer
-    \RequirePackage{libertine} % Linux libertine font for PdfLaTeX
+        \RequirePackage{libertine} % Linux libertine font for PdfLaTeX
+        %\RequirePackage{lmodern} % Latin modern font
+        \usepackage{multicol} % To get multiple columns in TOC
     \else
-    \RequirePackage{lmodern} % Latin modern font
+        \RequirePackage{lmodern} % Latin modern font
 \fi
 
 
 \if@memoir
-    \RequirePackage[hyperref]{xcolor} % Needs to be loaded before listings
+    \if@knitr
+    \else
+        \RequirePackage[hyperref]{xcolor} % Needs to be loaded before listings
+    \fi
 \fi
 
 %% ##################### MATH / CODE #########################################
@@ -99,40 +108,33 @@
 %% ##################### BIBLIOGRAPHY ########################################
 
 \if@bibliography
-    \RequirePackage[
-        backend=biber,
-        style=authoryear-comp, % or icomp if ibid
-        %style=authortitle-icomp, %chicago-like
-        natbib=true,
-        sortlocale=en_US,
-        maxnames=3,
-        minnames=1,
-        maxcitenames=2,
-        mincitenames=1,
-        maxbibnames=5,
-        minbibnames=1,
-        doi=false,
-        url=false,
-        isbn=false,
-        eprint=false,
-        dashed=true,                % Will output dash instead of repeated author
-        hyperref=true,
-        backref=false,              % Backref can be useful
-        useprefix=true,             % print "von" etc (biber only)
-        sorting=nyt,                % sort bibliography after name-year-title
-        sortcites=true,             % sort citations in text (when sep. by ",")
-    ]{biblatex}                     % BIBLATEX Bibliography
-
-% For chicago biblatex this could be used?
-%    \RequirePackage[
-%        notes,
-%        %strict,
-%        isbn=false,
-%        hyperref=true,
-%        backref=false,
-%        bibencoding=utf8,
-%        backend=biber
-%    ]{biblatex-chicago}
+    \if@tufte
+        % tufte screws with bibs... [nobib] doesn't seem to work??
+    \else
+        \RequirePackage[
+            backend=biber,
+            style=authoryear-comp, % or icomp if ibid
+            %style=authortitle-icomp, %chicago-like
+            natbib=true,
+            sortlocale=en_US,
+            maxnames=3,
+            minnames=1,
+            maxcitenames=2,
+            mincitenames=1,
+            maxbibnames=5,
+            minbibnames=1,
+            doi=false,
+            url=false,
+            isbn=false,
+            eprint=false,
+            dashed=true,                % Will output dash instead of repeated author
+            hyperref=true,
+            backref=false,              % Backref can be useful
+            useprefix=true,             % print "von" etc (biber only)
+            sorting=nyt,                % sort bibliography after name-year-title
+            sortcites=true,             % sort citations in text (when sep. by ",")
+        ]{biblatex}                     % BIBLATEX Bibliography
+    \fi
 \fi
 
 %% ##################### OTHER USEFUL STUFF ##################################
@@ -170,27 +172,30 @@
 
 %hypcap is outdated, test with caption package (with hypcap=true) instead
 %\RequirePackage[all]{hypcap}    % Makes hyperrefs refer to top of figures.
-\RequirePackage[hypcap=true,hypcapspace=0.5\baselineskip]{caption}
-\if@memoir %subcaption does not work with neither beamer nor tufte
-    \RequirePackage[hypcap=true]{subcaption}
+\if@memoir
+    % Memoir has its own build in subcaption system!
+    % \RequirePackage[hypcap=true,hypcapspace=0.5\baselineskip]{caption} % aption for tufte?
+    % \RequirePackage[hypcap=true]{subcaption}
+    % \captionsetup{
+    %     listformat=empty,
+    %     tablename=Table,
+    %     justification=justified,
+    %     labelsep=colon,
+    %     position=above,
+    %     skip=\onelineskip,
+    %     width=\linewidth,
+    %     labelfont={small},
+    %     font={small}
+    % }
 \fi
-%\captionsetup{
-    %listformat=empty,
-    %tablename=Table,
-    %justification=justified,
-    %labelsep=colon,
-    %position=above,
-    %skip=\onelineskip,
-    %width=\linewidth,
-    %labelfont={small},
-    %font={small}
-%}
+
 \if@tufte
     % Subcaption stuff seems really buggy with tufte.
     %\RequirePackage{subcaption} %instead of subfigure and subfig, however works poorly
     %\captionsetup{compatibility=false}
     %\RequirePackage{subfig}
     %\RequirePackage[margin=10pt, font=small, labelfont=bf, hypcap=true]{caption}
+    \usepackage[caption=false]{subfig}
 \fi
 
 %% ##################### LOAD SETTINGS #######################################
