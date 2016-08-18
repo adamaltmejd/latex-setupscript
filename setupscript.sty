@@ -68,8 +68,8 @@
 %\RequirePackage[a-1b]{pdfx} % A-1b standards compilant pdf
 
 \if@beamer
-        \RequirePackage{libertine} % Linux libertine font for PdfLaTeX
-        %\RequirePackage{lmodern} % Latin modern font
+        %\RequirePackage{libertine} % Linux libertine font for PdfLaTeX
+        \RequirePackage{lmodern} % Latin modern font
         \usepackage{multicol} % To get multiple columns in TOC
     \else
         \RequirePackage{lmodern} % Latin modern font
@@ -117,6 +117,7 @@
             %style=authortitle-icomp, %chicago-like
             natbib=true,
             sortlocale=en_US,
+            %giveninits=true,            % Use initials for first and middle names
             maxnames=3,
             minnames=1,
             maxcitenames=2,
@@ -134,6 +135,11 @@
             sorting=nyt,                % sort bibliography after name-year-title
             sortcites=true,             % sort citations in text (when sep. by ",")
         ]{biblatex}                     % BIBLATEX Bibliography
+        % Do not print language even when available
+        \AtEveryBibitem{
+            \clearlist{language}
+        }
+        % More on bibsettings here: http://tex.stackexchange.com/questions/12806/guidelines-for-customizing-biblatex-styles
     \fi
 \fi
 
@@ -150,21 +156,28 @@
 
 % Hyperref should always be loaded in the end.
 % If loading standards compilant use options [pdftex,pdfa]
-\if@beamer\else\RequirePackage{hyperref}\fi % Beamer automatically loads hyperref
-\definecolor{myblue}{RGB}{100,110,150}
+\if@beamer
+    % Beamer automatically loads hyperref
+    %\hypersetup{}
+\else
+    \RequirePackage{hyperref}
+    \definecolor{myblue}{RGB}{100,110,150}
+    \hypersetup{
+        colorlinks=true,
+        citecolor=myblue,
+        filecolor=myblue,
+        linkcolor=myblue,
+        linkbordercolor=myblue,
+        urlcolor=myblue
+    }
+\fi
 \hypersetup{
     unicode=true,
-    colorlinks=true,
-    citecolor=myblue,
-    filecolor=myblue,
-    linkcolor=myblue,
-    linkbordercolor=myblue,
-    urlcolor=myblue,
+    pdfauthor={Adam Altmejd},
     bookmarksnumbered=true,
     bookmarksopen=true,
-    breaklinks=true,
+    breaklinks=true
 }
-\hypersetup{pdfauthor={Adam Altmejd}}
 
 % But cleveref/hypcap need to be loaded after hyperref
 %\RequirePackage[nameinlink,noabbrev]{cleveref}

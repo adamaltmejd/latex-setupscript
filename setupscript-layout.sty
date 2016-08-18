@@ -133,21 +133,26 @@
 \if@beamer
 
     \usetheme[height=0mm]{Rochester}
-    \usecolortheme[RGB={71,98,176}]{structure}
+    %\usecolortheme[RGB={71,98,176}]{structure}
     \useoutertheme[subsection=false]{miniframes}
     \useinnertheme{rectangles}
 
     \setbeamercovered{transparent}
-    \beamertemplatenavigationsymbolsempty
+    \setbeamertemplate{navigation symbols}{} % no navigation symbols
 
-    \setbeamerfont{title like}{shape=\scshape}
-    \setbeamerfont{frametitle}{shape=\scshape}
+    \setbeamerfont{title like}{shape=\scshape} % small caps
+    \setbeamerfont{frametitle}{shape=\Large}
+    \addtobeamertemplate{frametitle}{}{\vspace{-2em}} % smaller top margin (after title)
 
-    % \setbeamercolor*{lower separation line head}{bg=black}
-    % \setbeamercolor*{normal text}{fg=black,bg=white}
+    %% COLORING
+    \setbeamercolor*{structure}{fg=black}
+    \setbeamercolor*{frametitle}{fg=black,bg=white}
+    \setbeamercolor*{button}{fg=black}
+    %\setbeamercolor*{lower separation line head}{bg=black}
+    %\setbeamercolor*{normal text}{fg=black,bg=white}
     % \setbeamercolor*{alerted text}{fg=red}
     % \setbeamercolor*{example text}{fg=black}
-    % \setbeamercolor*{structure}{fg=black}
+
 
     \setbeamercolor*{palette tertiary}{fg=black,bg=black!10}
     \setbeamercolor*{palette quaternary}{fg=black,bg=black!10}
@@ -157,7 +162,7 @@
     \setlist[itemize,1]{itemsep=1em}        % When using enumitem this is needed
     \setlist[itemize]{label=\scriptsize$\blacksquare$}
 
-    % This code makes miniframe signs be on same row as sections
+    % This code makes miniframe signs (small black circles) be on same row as sections
     \usepackage{etoolbox}
     \makeatletter
     \patchcmd{\slideentry}{\advance\beamer@tempdim by -.05cm}{\advance\beamer@tempdim by\beamer@vboxoffset\advance\beamer@tempdim by\beamer@boxsize\advance\beamer@tempdim by 0.9\pgflinewidth}{}{}
@@ -201,8 +206,9 @@
 
 
     % %% TOC
+    \setbeamerfont{tocfont}{series=\bfseries,size=\Large}
+    % \addtocontents{toc}{\vskip -1cm}
     % Load TOC for section at start of every section
-    % \setbeamerfont{tocfont}{series=\bfseries,size=\Large}
     % \AtBeginSection[]
     % {
     %   \begin{frame}<beamer>
@@ -213,7 +219,6 @@
     %     \end{multicols}
     %   \end{frame}
     % }
-    % \addtocontents{toc}{\vskip -1cm}
 
 
     % %% FOOTER
@@ -223,7 +228,6 @@
     % %     \insertshortinstitute, \insertshortdate
     % %     \hfill slide \insertframenumber/\inserttotalframenumber
     % % }
-
     %     \setbeamertemplate{footline}
     %     {
     %       \leavevmode%
@@ -241,19 +245,6 @@
     %       \vskip0pt%
     %     }
     %     \makeatother
-
-    % % \setbeamertemplate{title page}
-    % % {
-    % %     %\pgfuseimage{toptitle}
-    % %     \vskip0pt plus 1filll
-    % %     \begin{centering}
-    % %     {\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle}
-    % %     \insertdate
-    % %     \end{centering}
-    % %     \vskip0pt plus 1filll
-    % %     %\pgfuseimage{bottomtitle}
-    % % }
-
 
 \fi
 
