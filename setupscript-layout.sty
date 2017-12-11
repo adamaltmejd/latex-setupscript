@@ -1,17 +1,6 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{setupscript-layout}[2014/08/06 Layout options for setupscript]
 
-% Close \sqrt{}'s, use \oldsqrt for old behavior
-\LetLtxMacro{\oldsqrt}{\sqrt}
-\renewcommand{\sqrt}[1][\ ]{%
-    \def\DHLindex{#1}\mathpalette\DHLhksqrt}
-\def\DHLhksqrt#1#2{%
-    \setbox0=\hbox{$#1\oldsqrt[\DHLindex]{#2\,}$}\dimen0=\ht0
-    \advance\dimen0-0.2\ht0
-    \setbox2=\hbox{\vrule height\ht0 depth -\dimen0}%
-    {\box0\lower0.71pt\box2}}
-
-
 % Math definitions/environments, not for beamer
 \if@beamer\else
     % NON-FRAMED THEOREMS
@@ -69,61 +58,81 @@
     \fi
 \fi
 
+% Add closing mark to square root signs
+% use \oldsqrt for old behavior
+\LetLtxMacro{\oldsqrt}{\sqrt}
+\renewcommand{\sqrt}[1][\ ]{%
+    \def\DHLindex{#1}\mathpalette\DHLhksqrt}
+\def\DHLhksqrt#1#2{%
+    \setbox0=\hbox{$#1\oldsqrt[\DHLindex]{#2\,}$}\dimen0=\ht0
+    \advance\dimen0-0.2\ht0
+    \setbox2=\hbox{\vrule height\ht0 depth -\dimen0}%
+    {\box0\lower0.71pt\box2}}
+
 
 %% ############################################################################
 %% ##################### MEMOIR ###############################################
 %% ############################################################################
 \if@memoir
 
-% Parskip (not recommended)
-\setlength{\parindent}{0pt}
-\nonzeroparskip
-\abnormalparskip{8pt}
-%
+    % Parskip (not recommended)
+    \setlength{\parindent}{0pt}
+    \nonzeroparskip
+    \abnormalparskip{8pt}
+    %
 
-\counterwithout{footnote}{chapter} % continous numbering of footnotes
+    \counterwithout{footnote}{chapter} % continous numbering of footnotes
 
-% % Headstyles for chapter mode (not article)
-% \headstyles{ntglike}
-% \chapterstyle{dash}
-% \setlength{\beforechapskip}{25pt} % Remove extra spacing before chapter
-% \setlength{\midchapskip}{5pt}
-% \setlength{\afterchapskip}{15pt}
-% \renewcommand*{\chapnamefont}{\huge\bfseries}
-% %
+    % Correct numbering without chapters
+    \renewcommand{\thesection}{\arabic{section}}
+    \renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+    \makeatletter
+    \let\l@subsection\l@section
+    \let\l@section\l@chapter
+    \makeatother
+    \setsecnumdepth{subsection} % Numbering subsections
 
-% % Page style
-% \makepagestyle{mypagestyle}
-%     \setheadfoot{30pt}{15pt}
-%     \makeevenhead{mypagestyle}{}{}{}% Even page header
-%     \makeoddhead{mypagestyle}{}{}{}% Odd page header
-%     \makeevenfoot{mypagestyle}{}{\thepage}{}% Even page footer
-%     \makeoddfoot{mypagestyle}{}{\thepage}{}% Odd page footer
-% \pagestyle{mypagestyle}
-% \aliaspagestyle{title}{mypagestyle}
+    % % Headstyles for chapter mode (not article)
+    % \headstyles{ntglike}
+    % \chapterstyle{dash}
+    % \setlength{\beforechapskip}{25pt} % Remove extra spacing before chapter
+    % \setlength{\midchapskip}{5pt}
+    % \setlength{\afterchapskip}{15pt}
+    % \renewcommand*{\chapnamefont}{\huge\bfseries}
+    % %
 
-% Heading styles
+    % % Page style
+    % \makepagestyle{mypagestyle}
+    %     \setheadfoot{30pt}{15pt}
+    %     \makeevenhead{mypagestyle}{}{}{}% Even page header
+    %     \makeoddhead{mypagestyle}{}{}{}% Odd page header
+    %     \makeevenfoot{mypagestyle}{}{\thepage}{}% Even page footer
+    %     \makeoddfoot{mypagestyle}{}{\thepage}{}% Odd page footer
+    % \pagestyle{mypagestyle}
+    % \aliaspagestyle{title}{mypagestyle}
 
-% \makechapterstyle{adamschapter}{
-%     \renewcommand{\printchaptername}{}
-%     \renewcommand{\chapternamenum}{}
-%     \renewcommand{\chapnumfont}{\normalfont\Huge\bfseries}
-%     \renewcommand{\printchapternum}{\chapnumfont \thechapter.\space}
-%     \renewcommand{\afterchapternum}{}
-% }
-% %\chapterstyle{dash}
-% \chapterstyle{adamschapter}
-% \setlength{\beforechapskip}{25pt} % Remove extra spacing before chapter
-% \setlength{\midchapskip}{0pt}
-% \setlength{\afterchapskip}{15pt}
+    % Heading styles
 
-% % \makeheadstyles{adamsheads}{
-% %     \renewcommand*{\chapnamefont}{\normalfont\huge\bfseries}
-% %     \renewcommand*{\chapnumfont}{\normalfont\huge\bfseries}
-% %     \renewcommand*{\chaptitlefont}{\normalfont\Huge\bfseries}
-% % }
-% %\headstyles{default}
-% \headstyles{adams}
+    % \makechapterstyle{adamschapter}{
+    %     \renewcommand{\printchaptername}{}
+    %     \renewcommand{\chapternamenum}{}
+    %     \renewcommand{\chapnumfont}{\normalfont\Huge\bfseries}
+    %     \renewcommand{\printchapternum}{\chapnumfont \thechapter.\space}
+    %     \renewcommand{\afterchapternum}{}
+    % }
+    % %\chapterstyle{dash}
+    % \chapterstyle{adamschapter}
+    % \setlength{\beforechapskip}{25pt} % Remove extra spacing before chapter
+    % \setlength{\midchapskip}{0pt}
+    % \setlength{\afterchapskip}{15pt}
+
+    % % \makeheadstyles{adamsheads}{
+    % %     \renewcommand*{\chapnamefont}{\normalfont\huge\bfseries}
+    % %     \renewcommand*{\chapnumfont}{\normalfont\huge\bfseries}
+    % %     \renewcommand*{\chaptitlefont}{\normalfont\Huge\bfseries}
+    % % }
+    % %\headstyles{default}
+    % \headstyles{adams}
 
 \fi
 
@@ -133,7 +142,7 @@
 \if@beamer
 
     \usetheme[height=0mm]{Rochester}
-    %\usecolortheme[RGB={71,98,176}]{structure}
+    \usecolortheme[RGB={71,98,176}]{structure}
     \useoutertheme[subsection=false]{miniframes}
     \useinnertheme{rectangles}
 
@@ -148,78 +157,48 @@
     \setbeamercolor*{structure}{fg=black}
     \setbeamercolor*{frametitle}{fg=black,bg=white}
     \setbeamercolor*{button}{fg=black}
-    %\setbeamercolor*{lower separation line head}{bg=black}
-    %\setbeamercolor*{normal text}{fg=black,bg=white}
-    % \setbeamercolor*{alerted text}{fg=red}
-    % \setbeamercolor*{example text}{fg=black}
-
-
     \setbeamercolor*{palette tertiary}{fg=black,bg=black!10}
     \setbeamercolor*{palette quaternary}{fg=black,bg=black!10}
 
-    % Kind of bad for beamer!
-    \RequirePackage{enumitem}               % Needed to easily change space between itemize and labels
-    \setlist[itemize,1]{itemsep=1em}        % When using enumitem this is needed
-    \setlist[itemize]{label=\scriptsize$\blacksquare$}
+    %% FOOTNOTES
+    % allow footnote without number
+    \newcommand\blankfootnote[1]{%
+      \begingroup
+      \renewcommand\thefootnote{}\footnote{#1}%
+      \addtocounter{footnote}{-1}%
+      \endgroup
+    }
+    \renewcommand*\footnoterule{} % remove footnote ruler
+    \setbeamerfont{footnote}{size=\normalsize}
+
+    % we dont use enumitem since it breaks beamer
+    %\setlist[itemize,1]{itemsep=1em}        % When using enumitem this is needed
+    %\setlist[itemize]{label=\scriptsize$\blacksquare$}
+    \setbeamertemplate{itemize item}{\scriptsize\raise1.25pt\hbox{\donotcoloroutermaths$\blacksquare$}}
+    \setbeamertemplate{itemize subitem}{\tiny\raise1.5pt\hbox{\donotcoloroutermaths$\blacktriangleright$}}
+    \setbeamertemplate{itemize subsubitem}{\tiny\raise1.5pt\hbox{\donotcoloroutermaths$\blacktriangleright$}}
+
+    \setbeamertemplate{enumerate item}[square]
+    %\setbeamercolor{item projected}{bg=black,fg=white}
 
     % This code makes miniframe signs (small black circles) be on same row as sections
-    \usepackage{etoolbox}
     \makeatletter
-    \patchcmd{\slideentry}{\advance\beamer@tempdim by -.05cm}{\advance\beamer@tempdim by\beamer@vboxoffset\advance\beamer@tempdim by\beamer@boxsize\advance\beamer@tempdim by 0.9\pgflinewidth}{}{}
-    \patchcmd{\slideentry}{\kern\beamer@tempdim}{\advance\beamer@tempdim by 2pt\advance\beamer@tempdim by\wd\beamer@sectionbox\kern\beamer@tempdim}{}{}
+        \patchcmd{\slideentry}{\advance\beamer@tempdim by -.05cm}{\advance\beamer@tempdim by\beamer@vboxoffset\advance\beamer@tempdim by\beamer@boxsize\advance\beamer@tempdim by 0.9\pgflinewidth}{}{}
+        \patchcmd{\slideentry}{\kern\beamer@tempdim}{\advance\beamer@tempdim by 2pt\advance\beamer@tempdim by\wd\beamer@sectionbox\kern\beamer@tempdim}{}{}
     \makeatother
-
-    % % Definiert die headline
-    % \setbeamertemplate{headline}
-    % {
-    % \includegraphics[width=0.15\paperwidth]{logopolito} % test logo
-    % \begin{beamercolorbox}[wd=.85\paperwidth,right]{section in head/foot}
-    %     \rule{0.85\paperwidth}{1pt}
-    %     %Vertikaler Abstand
-    %     \vskip10pt
-    %     %Fügt die Standard-Navi ein (miniframes)
-    %     \insertnavigation{0.85\paperwidth}
-    %     \vskip8pt
-    %     \rule{0.85\paperwidth}{0.5pt}
-    %     \vskip27.5pt % same height of the example provided, but IMHO is too much
-    %     \rule{0.85\paperwidth}{1pt}
-    % \end{beamercolorbox}
-    % }
-
-    % % definition of the frametitle
-    % \setbeamertemplate{frametitle}
-    % {
-    % \vskip-24pt % to shift up the frametitle
-    % \hbox{
-    %  \begin{beamercolorbox}[wd=.0675\textwidth]{} % left shift
-    %  \end{beamercolorbox}
-    %  \begin{beamercolorbox}[sep=4pt]{section in head/foot}
-    %  \insertframetitle
-    %  \end{beamercolorbox}
-    %  }
-    % }
-
-    % \renewcommand{\(}{\begin{columns}}
-    % \renewcommand{\)}{\end{columns}}
-    % \newcommand{\<}[1]{\begin{column}{#1}}
-    % \renewcommand{\>}{\end{column}}
-
 
     % %% TOC
     \setbeamerfont{tocfont}{series=\bfseries,size=\Large}
-    % \addtocontents{toc}{\vskip -1cm}
-    % Load TOC for section at start of every section
-    % \AtBeginSection[]
-    % {
-    %   \begin{frame}<beamer>
-    %     \frametitle{Outline}
-    %     \usebeamerfont{tocfont}
-    %     \begin{multicols}{2}
-    %         \tableofcontents[currentsection, sectionstyle=show/shaded, subsectionstyle=hide]
-    %     \end{multicols}
-    %   \end{frame}
-    % }
 
+    % Larger buttons
+    \setbeamertemplate{button}{\tikz
+      \node[
+      inner xsep=5pt,
+      draw=structure!95,
+      fill=white,
+      yshift=7pt,
+      xshift=0pt,
+      rounded corners=3pt]  {\normalsize\insertbuttontext};}
 
     % %% FOOTER
     % % \useoutertheme{infolines}

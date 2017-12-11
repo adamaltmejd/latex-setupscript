@@ -55,8 +55,6 @@
 %% ##################### PREAMBLE ############################################
 %% ###########################################################################
 
-%\RequirePackage{fixltx2e} % not required with texlive 2015
-
 %% ##################### Typography ##########################################
 
 \RequirePackage[T1]{fontenc} % Should be loaded before inputenc
@@ -65,34 +63,24 @@
 \RequirePackage[babel]{csquotes} % Better looking quotes
 \RequirePackage{booktabs} % Better looking tables
 \RequirePackage{babel} % Language control
-%\RequirePackage[a-1b]{pdfx} % A-1b standards compilant pdf
+% \RequirePackage[a-1b]{pdfx} % A-1b standards compilant pdf
 
-\if@beamer
-        %\RequirePackage{libertine} % Linux libertine font for PdfLaTeX
-        \RequirePackage{lmodern} % Latin modern font
-        \usepackage{multicol} % To get multiple columns in TOC
-    \else
-        \RequirePackage{lmodern} % Latin modern font
-\fi
+\RequirePackage{lmodern} % Latin modern font
 
-
-\if@memoir
-    \if@knitr
-    \else
-        \RequirePackage[hyperref]{xcolor} % Needs to be loaded before listings
-    \fi
-\fi
+\if@memoir\if@knitr\else
+    \RequirePackage[hyperref]{xcolor} % Needs to be loaded before listings
+\fi\fi
 
 %% ##################### MATH / CODE #########################################
 
 \RequirePackage{amsmath,amssymb,amsfonts,mathrsfs,accents,gauss}
 \RequirePackage{listings}       % Used to \input code files
-\if@beamer\else
+\if@beamer\else % Beamer automatically loads amsthm for theorems
     \RequirePackage[amsmath,thmmarks,hyperref]{ntheorem}
     \if@framedtheorem
         \RequirePackage{mdframed} %options declared later
     \fi
-\fi % Beamer automatically loads amsthm for theorems
+\fi
 
 %% ##################### GRAPHICS ############################################
 
@@ -142,24 +130,35 @@
         % More on bibsettings here: http://tex.stackexchange.com/questions/12806/guidelines-for-customizing-biblatex-styles
     \fi
 \fi
+\if@beamer
+    % http://tex.stackexchange.com/questions/202988/beamer-patching-footnotes-warning
+    \RequirePackage{silence}
+    \WarningFilter{biblatex}{Patching footnotes failed}
+\fi
+
 
 %% ##################### OTHER USEFUL STUFF ##################################
 
-%\RequirePackage{pdflscape}      % Loads external pdfs in landscape mode
-%\RequirePackage{lineno}         % Puts line numbers on everything
-%\RequirePackage{lipsum}         % Lorem ipsum generation with \lipsum[]
-%\RequirePackage{standalone}     % Ignores preambles from input documents
-\RequirePackage{todonotes}       % Todo notes with for example \todo
-\RequirePackage{aliascnt}        % Alias counters
+% \RequirePackage{pdflscape}      % Loads external pdfs in landscape mode
+% \RequirePackage{lineno}         % Puts line numbers on everything
+% \RequirePackage{lipsum}         % Lorem ipsum generation with \lipsum[]
+% \RequirePackage{standalone}     % Ignores preambles from input documents
+% \RequirePackage{todonotes}      % Todo notes with for example \todo
+% \RequirePackage{aliascnt}       % Alias counters
+\usepackage{etoolbox} % for programming
+
+\if@beamer
+    % Enumitem makes it impossible to use \enumerate
+    % \RequirePackage{enumitem} % Needed to easily change space between itemize and labels.
+    \RequirePackage{multicol} % To get multiple columns in TOC
+    \RequirePackage{appendixnumberbeamer} % To get new numbering for appendix
+\fi
 
 %% ##################### REFERENCES (Loaded last) ############################
 
 % Hyperref should always be loaded in the end.
 % If loading standards compilant use options [pdftex,pdfa]
-\if@beamer
-    % Beamer automatically loads hyperref
-    %\hypersetup{}
-\else
+\if@beamer\else
     \RequirePackage{hyperref}
     \definecolor{myblue}{RGB}{100,110,150}
     \hypersetup{
@@ -183,9 +182,9 @@
 %\RequirePackage[nameinlink,noabbrev]{cleveref}
 \RequirePackage{cleveref}
 
-%hypcap is outdated, test with caption package (with hypcap=true) instead
-%\RequirePackage[all]{hypcap}    % Makes hyperrefs refer to top of figures.
 \if@memoir
+    %hypcap is outdated, test with caption package (with hypcap=true) instead
+    %\RequirePackage[all]{hypcap}    % Makes hyperrefs refer to top of figures.
     % Memoir has its own build in subcaption system!
     % \RequirePackage[hypcap=true,hypcapspace=0.5\baselineskip]{caption} % aption for tufte?
     % \RequirePackage[hypcap=true]{subcaption}
@@ -220,26 +219,17 @@
 %% ##################### DEBUG (last) ########################################
 
 % Fix bug with listings and breqn
-\let\origlstlisting=\lstlisting
-\let\endoriglstlisting=\endlstlisting
-\renewenvironment{lstlisting}
-    {\mathcode`\-=\hyphenmathcode
-     \everymath{}\mathsurround=0pt\origlstlisting}
-    {\endoriglstlisting}
+% \let\origlstlisting=\lstlisting
+% \let\endoriglstlisting=\endlstlisting
+% \renewenvironment{lstlisting}
+%     {\mathcode`\-=\hyphenmathcode
+%      \everymath{}\mathsurround=0pt\origlstlisting}
+%     {\endoriglstlisting}
 
-\if@memoir
-    % Use this if memoir style is set to article - however doesn't work well with appendix
-    \renewcommand{\thesection}{\arabic{section}}
-    \renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
-    \makeatletter
-    \let\l@subsection\l@section
-    \let\l@section\l@chapter
-    \makeatother
-    \setsecnumdepth{subsection} % Numbering subsections
+\if@beamer\else
+    \crefname{secinapp}{appendix}{appendices} % Create reference to appendix sections
+    \crefname{secinapp}{Appendix}{Appendices}
 \fi
-
-\crefname{secinapp}{appendix}{appendices} % Create reference to appendix sections
-\Crefname{secinapp}{Appendix}{Appendices}
 
 %% ##################### END #################################################
 
