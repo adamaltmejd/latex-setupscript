@@ -169,6 +169,9 @@
         linkbordercolor=myblue,
         urlcolor=myblue
     }
+    % But cleveref/hypcap need to be loaded after hyperref
+    %\RequirePackage[nameinlink,noabbrev]{cleveref}
+    \RequirePackage{cleveref}
 \fi
 \hypersetup{
     unicode=true,
@@ -178,9 +181,7 @@
     breaklinks=true
 }
 
-% But cleveref/hypcap need to be loaded after hyperref
-%\RequirePackage[nameinlink,noabbrev]{cleveref}
-\RequirePackage{cleveref}
+
 
 \if@memoir
     %hypcap is outdated, test with caption package (with hypcap=true) instead
