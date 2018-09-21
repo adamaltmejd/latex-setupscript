@@ -40,6 +40,10 @@
 \DeclareOption{bibliography}{
   \@bibliographytrue
 }
+\newif\if@pgf\@pgffalse
+\DeclareOption{pgf}{
+  \@pgftrue
+}
 \newif\if@framedtheorem\@framedtheoremfalse
 \DeclareOption{framedtheorem}{
   \@framedtheoremtrue
@@ -61,7 +65,6 @@
 \RequirePackage[utf8]{inputenc} %utf8x should be avoided, does not work with biblatex
 \RequirePackage[kerning]{microtype} % Better looking text
 \RequirePackage[babel]{csquotes} % Better looking quotes
-\RequirePackage{booktabs} % Better looking tables
 \RequirePackage{babel} % Language control
 % \RequirePackage[a-1b]{pdfx} % A-1b standards compilant pdf
 
@@ -84,56 +87,79 @@
 
 %% ##################### GRAPHICS ############################################
 
-\RequirePackage{graphicx,tikz,pgfplots}
-\usetikzlibrary{backgrounds,trees,positioning,arrows,calc}
-\pgfplotsset{compat=newest}
-\DeclareGraphicsExtensions{.pdf,.png,.jpg,.eps}
+\if@pgf
+    \RequirePackage{graphicx,tikz,pgfplots}
+    \usetikzlibrary{backgrounds,trees,positioning,arrows,calc}
+    \pgfplotsset{compat=newest}
+    \DeclareGraphicsExtensions{.pdf,.png,.jpg,.eps}
+\fi
 
 \if@memoir
-    \RequirePackage[section]{placeins} % Creates \FloatBarrier at every new section.
+    \RequirePackage{placeins} % Option [section] to create \FloatBarrier automatically at sections
 \fi
+
+%% ##################### TABLES ############################################
+
+\RequirePackage{siunitx}
+\sisetup{
+	group-digits = integer, % group integers in groups of 3 (not decimals)
+	input-decimal-markers = {.},
+	%table-number-alignment = center-decimal-marker, % try to do it automatically
+	table-number-alignment = center, %  requires defining pre post spacing
+	input-open-uncertainty = {},
+	input-close-uncertainty = {},
+	table-align-text-pre = false,
+    table-align-text-post = false,
+    table-format = -2.2, % defaults, can easily be changed for specific table
+    table-space-text-pre ={(},
+    table-space-text-post={)}
+}
+\RequirePackage{booktabs} % Better looking tables
+\RequirePackage{threeparttable}
 
 %% ##################### BIBLIOGRAPHY ########################################
 
 \if@bibliography
+    % More on bibsettings here:
+    % http://tex.stackexchange.com/questions/12806/guidelines-for-customizing-biblatex-styles
     \if@tufte
         % tufte screws with bibs... [nobib] doesn't seem to work??
-    \else
+    \fi
+    \if@beamer
         \RequirePackage[
-            backend=biber,
+            style=authoryear-comp,
+            maxnames=2,
+        ]{biblatex}
+
+
+        % http://tex.stackexchange.com/questions/202988/beamer-patching-footnotes-warning
+        \RequirePackage{silence}
+        \WarningFilter{biblatex}{Patching footnotes failed}
+    \fi
+    \if@memoir
+        \RequirePackage[
             style=authoryear-comp, % or icomp if ibid
-            %style=authortitle-icomp, %chicago-like
             natbib=true,
-            sortlocale=en_US,
-            %giveninits=true,            % Use initials for first and middle names
-            maxnames=3,
-            minnames=1,
             maxcitenames=2,
             mincitenames=1,
             maxbibnames=5,
             minbibnames=1,
-            doi=false,
-            url=false,
-            isbn=false,
-            eprint=false,
-            dashed=true,                % Will output dash instead of repeated author
-            hyperref=true,
-            backref=false,              % Backref can be useful
-            useprefix=true,             % print "von" etc (biber only)
-            sorting=nyt,                % sort bibliography after name-year-title
-            sortcites=true,             % sort citations in text (when sep. by ",")
         ]{biblatex}                     % BIBLATEX Bibliography
-        % Do not print language even when available
-        \AtEveryBibitem{
-            \clearlist{language}
-        }
-        % More on bibsettings here: http://tex.stackexchange.com/questions/12806/guidelines-for-customizing-biblatex-styles
     \fi
-\fi
-\if@beamer
-    % http://tex.stackexchange.com/questions/202988/beamer-patching-footnotes-warning
-    \RequirePackage{silence}
-    \WarningFilter{biblatex}{Patching footnotes failed}
+    \ExecuteBibliographyOptions{
+        giveninits=true, % Use initials for first and middle names
+        uniquename=false, % Do not add initials if two authors have same name
+        useprefix=true,
+        sortlocale=en_US,
+        dashed=true, % Will output dash instead of repeated author
+        sorting=nyt,sortcites=true,hyperref=true,
+        isbn=false,url=false,doi=false,eprint=false
+    }
+    \AtEveryBibitem{%
+            \clearlist{language}%
+            \clearfield{month}%
+            \clearfield{day}%
+    }
 \fi
 
 
@@ -145,7 +171,7 @@
 % \RequirePackage{standalone}     % Ignores preambles from input documents
 % \RequirePackage{todonotes}      % Todo notes with for example \todo
 % \RequirePackage{aliascnt}       % Alias counters
-\usepackage{etoolbox} % for programming
+\RequirePackage{etoolbox} % for programming
 
 \if@beamer
     % Enumitem makes it impossible to use \enumerate
@@ -213,9 +239,9 @@
 
 %% ##################### LOAD SETTINGS #######################################
 
-\usepackage{setupscript-layout}
-\usepackage{setupscript-syntax}
-\usepackage{setupscript-abbreviations}
+\RequirePackage{setupscript-layout}
+\RequirePackage{setupscript-syntax}
+\RequirePackage{setupscript-abbreviations}
 
 %% ##################### DEBUG (last) ########################################
 

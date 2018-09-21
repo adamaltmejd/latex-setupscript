@@ -92,6 +92,29 @@
     \makeatother
     \setsecnumdepth{subsection} % Numbering subsections
 
+    % Figure Captions (and notes)
+    \captionstyle[\centering]{\raggedright} % [short caption]{long caption}
+    \captiondelim{. }
+    \captionnamefont{\normalsize\sffamily} % \sffamily
+    \captiontitlefont{\normalsize\sffamily} % \sffamily
+
+    % To add a note below the figure use \figurenotes{}
+    \newcommand{\figurenotes}[1]{%
+    \captionstyle[\centering]{} % \raggedright
+    \captiontitlefont{\footnotesize\rmfamily}
+    \legend{Notes: #1}}
+
+    % Footnote with no number (for e.g. acknowledgements)
+    \newcommand\blindfootnote[1]{%
+    \begingroup
+    \renewcommand\thefootnote{}\footnote{#1}%
+    \addtocounter{footnote}{-1}%
+    \endgroup
+    }
+
+
+    \checkandfixthelayout
+
     % % Headstyles for chapter mode (not article)
     % \headstyles{ntglike}
     % \chapterstyle{dash}
@@ -151,7 +174,7 @@
 
     \setbeamerfont{title like}{shape=\scshape} % small caps
     \setbeamerfont{frametitle}{shape=\Large}
-    \addtobeamertemplate{frametitle}{}{\vspace{-2em}} % smaller top margin (after title)
+    \addtobeamertemplate{frametitle}{}{\vspace{-1em}} % smaller top margin (after title)
 
     %% COLORING
     \setbeamercolor*{structure}{fg=black}
@@ -169,7 +192,7 @@
       \endgroup
     }
     \renewcommand*\footnoterule{} % remove footnote ruler
-    \setbeamerfont{footnote}{size=\normalsize}
+    \setbeamerfont{footnote}{size=\scriptsize}
 
     % we dont use enumitem since it breaks beamer
     %\setlist[itemize,1]{itemsep=1em}        % When using enumitem this is needed
@@ -224,6 +247,13 @@
     %       \vskip0pt%
     %     }
     %     \makeatother
+
+    % Footnote on right side
+    \setbeamertemplate{footnote}{%
+        \parindent 0em\noindent%
+        \raggedleft%\raggedright
+        \usebeamercolor{footnote}\hbox to 0.8em{\hfil\insertfootnotemark}\insertfootnotetext\par%
+    }
 
 \fi
 
