@@ -128,15 +128,48 @@
     \if@beamer
         \RequirePackage[
             style=authoryear-comp,
-            maxnames=2,
+            maxcitenames=2,
+            mincitenames=1,
+            maxbibnames=5,
+            minbibnames=1,
+            giveninits=true, % Use initials for first and middle names
+            uniquename=false, % Do not add initials if two authors have same name
+            useprefix=true,
+            sortlocale=en_US,
+            dashed=true, % Will output dash instead of repeated author
+            sorting=nyt,sortcites=true,hyperref=true,
+            isbn=false,url=false,doi=false,eprint=false
         ]{biblatex}
-
+        \AtEveryBibitem{%
+            \clearlist{language}%
+            \clearfield{month}%
+            \clearfield{day}%
+        }
 
         % http://tex.stackexchange.com/questions/202988/beamer-patching-footnotes-warning
         \RequirePackage{silence}
         \WarningFilter{biblatex}{Patching footnotes failed}
     \fi
     \if@memoir
+        % \usepackage[
+        %     authordate,%authordate,%notes
+        %     short,
+        %     strict,%
+        %     natbib,
+        %     bibencoding=inputenc,%
+        %     autolang=other,%
+        %     backend=biber,%
+        %     maxnames=2,%
+        %     minnames=1,%
+        %     maxbibnames=5,%
+        %     minbibnames=3,%
+        %     doi=only,%
+        %     isbn=false,%
+        %     eprint=false,%
+        %     numbermonth=false,%
+        %     bookpages=false%
+        % ]{biblatex-chicago}
+
         \RequirePackage[
             style=authoryear-comp, % or icomp if ibid
             natbib=true,
@@ -144,22 +177,20 @@
             mincitenames=1,
             maxbibnames=5,
             minbibnames=1,
+            giveninits=true, % Use initials for first and middle names
+            uniquename=false, % Do not add initials if two authors have same name
+            useprefix=true,
+            sortlocale=en_US,
+            sorting=nyt,sortcites=true,hyperref=true,
+            isbn=false,url=false,doi=false,eprint=false
         ]{biblatex}                     % BIBLATEX Bibliography
-    \fi
-    \ExecuteBibliographyOptions{
-        giveninits=true, % Use initials for first and middle names
-        uniquename=false, % Do not add initials if two authors have same name
-        useprefix=true,
-        sortlocale=en_US,
-        dashed=true, % Will output dash instead of repeated author
-        sorting=nyt,sortcites=true,hyperref=true,
-        isbn=false,url=false,doi=false,eprint=false
-    }
-    \AtEveryBibitem{%
+
+        \AtEveryBibitem{%
             \clearlist{language}%
             \clearfield{month}%
             \clearfield{day}%
-    }
+        }
+    \fi
 \fi
 
 
@@ -176,9 +207,47 @@
 \if@beamer
     % Enumitem makes it impossible to use \enumerate
     % \RequirePackage{enumitem} % Needed to easily change space between itemize and labels.
-    \RequirePackage{multicol} % To get multiple columns in TOC
+    % \RequirePackage{multicol} % To get multiple columns in TOC
     \RequirePackage{appendixnumberbeamer} % To get new numbering for appendix
 \fi
+
+%% ##################### REFERENCES (Loaded last) ############################
+
+\if@memoir
+    %hypcap is outdated, test with caption package (with hypcap=true) instead
+    %\RequirePackage[all]{hypcap}    % Makes hyperrefs refer to top of figures.
+    % Memoir has its own build in subcaption system!
+    % \RequirePackage[hypcap=true,hypcapspace=0.5\baselineskip]{caption} % aption for tufte?
+    % \RequirePackage[hypcap=true]{subcaption}
+
+\fi
+
+\if@tufte
+    % Subcaption stuff seems really buggy with tufte.
+    %\RequirePackage{subcaption} %instead of subfigure and subfig, however works poorly
+    %\captionsetup{compatibility=false}
+    %\RequirePackage{subfig}
+    %\RequirePackage[margin=10pt, font=small, labelfont=bf, hypcap=true]{caption}
+    \usepackage[caption=false]{subfig}
+\fi
+
+\if@beamer
+    % Works with beamer nowadays!
+    \usepackage{caption}
+    \usepackage{subcaption}
+    % \captionsetup{
+    %     listformat=empty,
+    %     tablename=Table,
+    %     justification=justified,
+    %     labelsep=colon,
+    %     position=above,
+    %     skip=\onelineskip,
+    %     width=\linewidth,
+    %     labelfont={small},
+    %     font={small}
+    % }
+\fi
+
 
 %% ##################### REFERENCES (Loaded last) ############################
 
@@ -206,36 +275,6 @@
     bookmarksopen=true,
     breaklinks=true
 }
-
-
-
-\if@memoir
-    %hypcap is outdated, test with caption package (with hypcap=true) instead
-    %\RequirePackage[all]{hypcap}    % Makes hyperrefs refer to top of figures.
-    % Memoir has its own build in subcaption system!
-    % \RequirePackage[hypcap=true,hypcapspace=0.5\baselineskip]{caption} % aption for tufte?
-    % \RequirePackage[hypcap=true]{subcaption}
-    % \captionsetup{
-    %     listformat=empty,
-    %     tablename=Table,
-    %     justification=justified,
-    %     labelsep=colon,
-    %     position=above,
-    %     skip=\onelineskip,
-    %     width=\linewidth,
-    %     labelfont={small},
-    %     font={small}
-    % }
-\fi
-
-\if@tufte
-    % Subcaption stuff seems really buggy with tufte.
-    %\RequirePackage{subcaption} %instead of subfigure and subfig, however works poorly
-    %\captionsetup{compatibility=false}
-    %\RequirePackage{subfig}
-    %\RequirePackage[margin=10pt, font=small, labelfont=bf, hypcap=true]{caption}
-    \usepackage[caption=false]{subfig}
-\fi
 
 %% ##################### LOAD SETTINGS #######################################
 

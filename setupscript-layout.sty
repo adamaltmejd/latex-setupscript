@@ -75,11 +75,40 @@
 %% ############################################################################
 \if@memoir
 
+    %%%%%%%%%%%%%
+    % PAGE LAYOUT
+
+    \setlrmarginsandblock{30mm}{30mm}{*} % left right margins
+    \setulmarginsandblock{35mm}{40mm}{*} % top bottom margins
+    \setheadfoot{\onelineskip}{2\onelineskip} % {headheight}{footskip}
+    \setheaderspaces{20mm}{*}{*} % {headdrop}{headsep}{ratio}
+
     % Parskip (not recommended)
-    \setlength{\parindent}{0pt}
-    \nonzeroparskip
-    \abnormalparskip{8pt}
-    %
+    % \setlength{\parindent}{0pt}
+    % \nonzeroparskip
+    % \abnormalparskip{8pt}
+    \setlength{\parindent}{2em} % indentation for new paragraphs
+    \setSingleSpace{1.1} % Line spacing
+
+    % PAGE Breaking
+    % Dealing with widows and orphans
+    \clubpenalty=9996
+    \widowpenalty=9999
+    \brokenpenalty=4991
+    \predisplaypenalty=10000
+    \postdisplaypenalty=1549
+    \displaywidowpenalty=1602
+
+    %\flushbottom % to stretch vboxes to cover full page (won't always work with figures)
+    %\checkandfixthelayout[lines] % use "fixed" with raggedbottom
+
+    % Alternatively:
+    \raggedbottom % allow textheight to vary somewhat between pages
+    \feetatbottom % to ensure footnotes are still at bottom with \raggedbottom
+    \checkandfixthelayout[fixed] % use "fixed" with raggedbottom
+
+    % END
+    %%%%%
 
     \counterwithout{footnote}{chapter} % continous numbering of footnotes
 
@@ -111,9 +140,6 @@
     \addtocounter{footnote}{-1}%
     \endgroup
     }
-
-
-    \checkandfixthelayout
 
     % % Headstyles for chapter mode (not article)
     % \headstyles{ntglike}
