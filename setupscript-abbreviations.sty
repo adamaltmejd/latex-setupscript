@@ -15,15 +15,6 @@
 \newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
 \def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
 
-% Blind footnote without marker
-% https://tex.stackexchange.com/questions/30720/footnote-without-a-marker
-\newcommand\blindfootnote[1]{%
-  \begingroup
-  \renewcommand\thefootnote{}\footnote{#1}%
-  \addtocounter{footnote}{-1}%
-  \endgroup
-}
-
 % Add special \widebar command from
 % http://tex.stackexchange.com/questions/16337/can-i-get-a-widebar-without-using-the-mathabx-package
 \makeatletter
