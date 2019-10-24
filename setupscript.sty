@@ -68,21 +68,37 @@
 
 %% ##################### Typography ##########################################
 
+\if@memoir
+    \RequirePackage{ebgaramond}
+    \RequirePackage[cmintegrals,cmbraces]{newtxmath}
+    % ebgaramond-maths is buggy - currently does not show numbers
+    % \RequirePackage{ebgaramond-maths} % needs to be loaded after newtxmath,
+    \RequirePackage{avant} % Avant Gothic for headings/captions
+\else
+    \RequirePackage{lmodern} % Latin modern font
+\fi
+
 \RequirePackage[T1]{fontenc} % Should be loaded before inputenc
 \RequirePackage[utf8]{inputenc} %utf8x should be avoided, does not work with biblatex
-\RequirePackage[kerning]{microtype} % Better looking text
+\RequirePackage[protrusion=true,expansion=true,final,babel]{microtype} % Better looking text
 \RequirePackage[babel]{csquotes} % Better looking quotes
 \RequirePackage{babel} % Language control
-
-\RequirePackage{lmodern} % Latin modern font
 
 \if@memoir\if@knitr\else
     \RequirePackage[hyperref]{xcolor} % Needs to be loaded before listings
 \fi\fi
 
+\RequirePackage{lipsum} % to add filler text to template. Can remove.
+
 %% ##################### MATH / CODE #########################################
 
-\RequirePackage{amsmath,amssymb,amsfonts,mathrsfs,accents,gauss}
+\RequirePackage{amsmath,amssymb,amsfonts}
+%\RequirePackage{accents} % provides different accents, does not work with ebgaramond-maths
+%\RequirePackage{mathrsfs} % provides \mathscr
+%\RequirePackage{gauss} % for matrix opetarations
+
+%\RequirePackage{} % conflicts with newtxmath which provides its own widehat
+
 
 \if@highlighting\RequirePackage{listings}\fi
 
@@ -95,11 +111,13 @@
 
 %% ##################### GRAPHICS ############################################
 
+\RequirePackage{graphicx}
+\DeclareGraphicsExtensions{.pdf,.png,.jpg,.eps}
+
 \if@pgf
-    \RequirePackage{graphicx,tikz,pgfplots}
+    \RequirePackage{tikz,pgfplots}
     \usetikzlibrary{backgrounds,trees,positioning,arrows,calc}
     \pgfplotsset{compat=newest}
-    \DeclareGraphicsExtensions{.pdf,.png,.jpg,.eps}
 \fi
 
 \if@memoir
@@ -143,6 +161,10 @@
             uniquename=false, % Do not add initials if two authors have same name
             numbermonth=false,%
             uniquename=false,
+            useprefix=true, % print "von" etc (biber only)
+            giveninits=true, % Use initials for first and middle names
+            sortcites=true, % sort citations in text (when separated by comma)
+            date=year,
             doi=only,isbn=false,eprint=false
         ]{biblatex-chicago}
 
@@ -151,6 +173,10 @@
             \clearfield{month}%
             \clearfield{day}%
         }
+
+        \DeclareFieldFormat[legislation]{citetitle}{{#1}} % no italics of title of legislation in text
+        \DeclareFieldFormat[thesis]{title}{\mkbibitalic{#1}}% italics thesis title in bibliography
+
 
         \if@beamer
             % http://tex.stackexchange.com/questions/202988/beamer-patching-footnotes-warning
@@ -274,18 +300,6 @@
     \fi
 \fi
 
-% Add closing mark to square root signs
-% use \oldsqrt for old behavior
-\LetLtxMacro{\oldsqrt}{\sqrt}
-\renewcommand{\sqrt}[1][\ ]{%
-    \def\DHLindex{#1}\mathpalette\DHLhksqrt}
-\def\DHLhksqrt#1#2{%
-    \setbox0=\hbox{$#1\oldsqrt[\DHLindex]{#2\,}$}\dimen0=\ht0
-    \advance\dimen0-0.2\ht0
-    \setbox2=\hbox{\vrule height\ht0 depth -\dimen0}%
-    {\box0\lower0.71pt\box2}}
-
-
 %% ##################### MEMOIR ################################################
 \if@memoir
 
@@ -297,13 +311,11 @@
     \setheadfoot{\onelineskip}{2\onelineskip} % {headheight}{footskip}
     \setheaderspaces{20mm}{*}{*} % {headdrop}{headsep}{ratio}
 
-    % Parskip (not recommended)
-    % \setlength{\parindent}{0pt}
-    % \nonzeroparskip
-    % \abnormalparskip{8pt}
+    % Indent
     \setlength{\parindent}{2em} % indentation for new paragraphs
     \setSingleSpace{1.1} % Line spacing
 
+    %%%%%%%%%%%%%%%%
     % PAGE Breaking
     % Dealing with widows and orphans
     \clubpenalty=9996
@@ -321,19 +333,8 @@
     \feetatbottom % to ensure footnotes are still at bottom with \raggedbottom
     \checkandfixthelayout[fixed] % use "fixed" with raggedbottom
 
-    % END
-    %%%%%
-
-    \counterwithout{footnote}{chapter} % continous numbering of footnotes
-
-    % Correct numbering without chapters
-    \renewcommand{\thesection}{\arabic{section}}
-    \renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
-    \makeatletter
-    \let\l@subsection\l@section
-    \let\l@section\l@chapter
-    \makeatother
-    \setsecnumdepth{subsection} % Numbering subsections
+    %%%%%%%%%%%%%%%
+    % Figures
 
     % Figure Captions (and notes)
     \captionstyle[\centering]{\raggedright} % [short caption]{long caption}
@@ -347,56 +348,105 @@
     \captiontitlefont{\footnotesize\rmfamily}
     \legend{Notes: #1}}
 
-    % Footnote with no number (for e.g. acknowledgements)
-    % https://tex.stackexchange.com/questions/30720/footnote-without-a-marker
-    \newcommand\blindfootnote[1]{%
-    \begingroup
-    \renewcommand\thefootnote{}\footnote{#1}%
-    \addtocounter{footnote}{-1}%
-    \endgroup
+    \newsubfloat{figure}% Allow subfloats in figure environment
+
+    \setfloatadjustment{figure}{\centering}
+    \setfloatadjustment{table}{\footnotesize\centering}
+
+    %%%%%%%%%%%%%%%%
+    % Abstracts
+    \renewcommand{\abstractnamefont}{\sffamily\Large} %\small\normalfont\bfseries
+    \renewcommand{\abstracttextfont}{\vspace*{-2.5ex}\normalfont\normalsize\noindent\ignorespaces} %\small
+    \setlength{\absleftindent}{0pt}
+    \setlength{\absrightindent}{0pt}
+    \setlength{\absparindent}{0pt}
+    \setlength{\absparsep}{0pt}
+    \setlength{\abstitleskip}{0pt}
+
+    %%%%%%%%%%%%%%%%
+    % Page styles and counters
+
+    \makepagestyle{setupscript}
+    \makeevenhead{setupscript}{}{\normalfont\sffamily\scshape\rightmark}{}
+    \makeoddhead{setupscript}{}{\normalfont\sffamily\scshape\leftmark}{}
+    \makeevenfoot{setupscript}{}{\normalfont\sffamily\thepage}{}
+    \makeoddfoot{setupscript}{}{\normalfont\sffamily\thepage}{}
+    \makepsmarks{setupscript}{%
+        \nouppercaseheads % use smallcaps instead of uppercase
+        \createmark      {chapter}  {both}{nonumber}   {\@chapapp\ }{. \ }
+        %\createmark      {section}  {right}{nonumber}   {}           {. \ }
+        \createplainmark {toc}      {both}              {\contentsname}
+        \createplainmark {lof}      {both}              {\listfigurename}
+        \createplainmark {lot}      {both}              {\listtablename}
+        \createplainmark {bib}      {both}              {\bibname}
+        \createplainmark {index}    {both}              {\indexname}
+        \createplainmark {glossary} {both}              {\glossaryname}
     }
 
-    % % Headstyles for chapter mode (not article)
-    % \headstyles{ntglike}
-    % \chapterstyle{dash}
-    % \setlength{\beforechapskip}{25pt} % Remove extra spacing before chapter
-    % \setlength{\midchapskip}{5pt}
-    % \setlength{\afterchapskip}{15pt}
-    % \renewcommand*{\chapnamefont}{\huge\bfseries}
-    % %
 
-    % % Page style
-    % \makepagestyle{mypagestyle}
-    %     \setheadfoot{30pt}{15pt}
-    %     \makeevenhead{mypagestyle}{}{}{}% Even page header
-    %     \makeoddhead{mypagestyle}{}{}{}% Odd page header
-    %     \makeevenfoot{mypagestyle}{}{\thepage}{}% Even page footer
-    %     \makeoddfoot{mypagestyle}{}{\thepage}{}% Odd page footer
-    % \pagestyle{mypagestyle}
-    % \aliaspagestyle{title}{mypagestyle}
+    % Use empty for float-only pages
+    \mergepagefloatstyle{mergedstyle}{setupscript}{empty}
+    \pagestyle{mergedstyle}
 
-    % Heading styles
+    % \aliaspagestyle{chapter}{empty} % no pagestyle on chapter page
+    \counterwithout{footnote}{chapter} % continous numbering of footnotes
+    \setsecnumdepth{subsection}
 
-    % \makechapterstyle{adamschapter}{
-    %     \renewcommand{\printchaptername}{}
-    %     \renewcommand{\chapternamenum}{}
-    %     \renewcommand{\chapnumfont}{\normalfont\Huge\bfseries}
-    %     \renewcommand{\printchapternum}{\chapnumfont \thechapter.\space}
-    %     \renewcommand{\afterchapternum}{}
+    %%%%%%%%%%%%%%%%
+    % Chapter Style
+
+    % \makechapterstyle{ssethesis}{%
+    % \renewcommand*{\chaptitlefont}{\sffamily\LARGE}
+    % \renewcommand*{\chapnamefont}{\sffamily\huge}
+    % \renewcommand*{\chapnumfont}{\chapnamefont}
+    % \renewcommand*{\printchaptername}{\centering\chapnamefont \@chapapp}
+    % \renewcommand*{\printchapternonum}{\centering\chapnamefont}
+    % \setlength{\beforechapskip}{4\onelineskip}
+    % \setlength{\midchapskip}{2\onelineskip}
+    % \setlength{\afterchapskip}{2\onelineskip}
     % }
-    % %\chapterstyle{dash}
-    % \chapterstyle{adamschapter}
-    % \setlength{\beforechapskip}{25pt} % Remove extra spacing before chapter
-    % \setlength{\midchapskip}{0pt}
-    % \setlength{\afterchapskip}{15pt}
+    % \chapterstyle{ssethesis}
+    \makechapterstyle{section2}{%
+        \renewcommand*{\chaptitlefont}{\sffamily\LARGE}
+        \renewcommand*{\printchaptername}{}
+        \renewcommand*{\chapternamenum}{}
+        \renewcommand*{\chapnamefont}{}
+        \renewcommand*{\chapnumfont}{\chaptitlefont}
+        \renewcommand*{\printchapternum}{\chapnumfont \thechapter}
+        \renewcommand*{\afterchapternum}{\quad}
+        \setlength{\beforechapskip}{2\onelineskip}
+        \setlength{\midchapskip}{\onelineskip}
+        \setlength{\afterchapskip}{\onelineskip}
+    }
+    \chapterstyle{section2}
 
-    % % \makeheadstyles{adamsheads}{
-    % %     \renewcommand*{\chapnamefont}{\normalfont\huge\bfseries}
-    % %     \renewcommand*{\chapnumfont}{\normalfont\huge\bfseries}
-    % %     \renewcommand*{\chaptitlefont}{\normalfont\Huge\bfseries}
-    % % }
-    % %\headstyles{default}
-    % \headstyles{adams}
+    %%%%%%%%%%%%%%%%
+    % Section styles
+    % negative ensures no _indentation_ after
+    \setsecheadstyle{\sffamily\Large}
+    \setbeforesecskip{-4ex plus -1ex minus -0.4ex}
+    \setaftersecskip{2.3ex plus 0.4ex}
+
+    \setsubsecheadstyle{\sffamily\large}
+    \setbeforesubsecskip{-2.8ex plus -1ex minus -0.4ex}
+    \setaftersubsecskip{1.3ex plus 0.3ex}
+
+    \setsubsubsecheadstyle{\sffamily\normalsize}
+    \setbeforesubsubsecskip{-2.8ex plus -1ex minus -0.4ex}
+    \setaftersubsubsecskip{1.3ex plus 0.3ex}
+
+    % Correct numbering without chapters
+    % \renewcommand{\thesection}{\arabic{section}}
+    % \renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+    % \makeatletter
+    % \let\l@subsection\l@section
+    % \let\l@section\l@chapter
+    % \makeatother
+    \setsecnumdepth{subsection} % Numbering subsections
+
+    %%%%%%%%%%%%%%%%
+    % Bibliography
+    \setlength{\bibitemsep}{0.5\baselineskip} % small space between items in bib
 
 \fi
 
@@ -574,6 +624,18 @@
 \newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
 \def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
 
+% Add closing mark to square root signs
+% use \oldsqrt for old behavior
+\LetLtxMacro{\oldsqrt}{\sqrt}
+\renewcommand{\sqrt}[1][\ ]{%
+    \def\DHLindex{#1}\mathpalette\DHLhksqrt}
+\def\DHLhksqrt#1#2{%
+    \setbox0=\hbox{$#1\oldsqrt[\DHLindex]{#2\,}$}\dimen0=\ht0
+    \advance\dimen0-0.2\ht0
+    \setbox2=\hbox{\vrule height\ht0 depth -\dimen0}%
+    {\box0\lower0.71pt\box2}}
+
+%%%
 % Add special \widebar command from
 % http://tex.stackexchange.com/questions/16337/can-i-get-a-widebar-without-using-the-mathabx-package
 \makeatletter
@@ -645,6 +707,7 @@
   \endgroup
 }
 \makeatother
+%%%
 
 %% ##################### END #################################################
 
