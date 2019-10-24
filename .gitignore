@@ -1,5 +1,8 @@
 .DS_Store
 
+# Testing folder
+test
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
