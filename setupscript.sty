@@ -354,21 +354,39 @@
     \setfloatadjustment{table}{\footnotesize\centering}
 
     %%%%%%%%%%%%%%%%
-    % Abstracts
+    % TITLE
+
+    \pretitle{\begin{center}\huge\sffamily}
+    \posttitle{\par\end{center}\vskip 0.5em}
+    \preauthor{\begin{center}
+                \large \lineskip 0.5em%
+                \begin{tabular}[t]{c}}
+    \postauthor{\end{tabular}\par\end{center}}
+    \predate{\begin{center}\large}
+    \postdate{\par\end{center}}
+
+    \setlength{\droptitle}{30pt}
+    \titlingpageend{\clearforchapter}{\clearforchapter}
+    \aliaspagestyle{titlingpage}{empty}
+
+    %%%%%%%%%%%%%%%%
+    % Abstract
     \renewcommand{\abstractnamefont}{\sffamily\Large} %\small\normalfont\bfseries
-    \renewcommand{\abstracttextfont}{\vspace*{-2.5ex}\normalfont\normalsize\noindent\ignorespaces} %\small
+    \renewcommand{\abstracttextfont}{\normalfont\normalsize\noindent\ignorespaces} %\small
     \setlength{\absleftindent}{0pt}
     \setlength{\absrightindent}{0pt}
     \setlength{\absparindent}{0pt}
     \setlength{\absparsep}{0pt}
-    \setlength{\abstitleskip}{0pt}
+    \setlength{\abstitleskip}{5ex}
 
     %%%%%%%%%%%%%%%%
     % Page styles and counters
 
     \makepagestyle{setupscript}
-    \makeevenhead{setupscript}{}{\normalfont\sffamily\scshape\rightmark}{}
-    \makeoddhead{setupscript}{}{\normalfont\sffamily\scshape\leftmark}{}
+    %\makeevenhead{setupscript}{}{\normalfont\sffamily\scshape\rightmark}{}
+    %\makeoddhead{setupscript}{}{\normalfont\sffamily\scshape\leftmark}{}
+    \makeevenhead{setupscript}{}{}{}
+    \makeoddhead{setupscript}{}{}{}
     \makeevenfoot{setupscript}{}{\normalfont\sffamily\thepage}{}
     \makeoddfoot{setupscript}{}{\normalfont\sffamily\thepage}{}
     \makepsmarks{setupscript}{%
@@ -436,6 +454,7 @@
     \setaftersubsubsecskip{1.3ex plus 0.3ex}
 
     % Correct numbering without chapters
+    % Just use chapters, better.
     % \renewcommand{\thesection}{\arabic{section}}
     % \renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
     % \makeatletter
@@ -443,6 +462,13 @@
     % \let\l@section\l@chapter
     % \makeatother
     \setsecnumdepth{subsection} % Numbering subsections
+
+    %%%%%%%%%%%%%%%%
+    % Footnotes
+    \footmarkstyle{\hspace{\parindent}#1.\,}    % indent the footmark
+    \setlength{\footmarkwidth} {0em}
+    \setlength{\footmarksep}   {0em}
+    \setlength{\footparindent} {\parindent}
 
     %%%%%%%%%%%%%%%%
     % Bibliography
