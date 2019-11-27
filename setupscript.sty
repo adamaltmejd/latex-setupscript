@@ -59,6 +59,10 @@
 \DeclareOption{highlighting}{
   \@highlightingtrue
 }
+\newif\if@nofonts\@nofontsfalse
+\DeclareOption{nofonts}{
+  \@nofontstrue
+}
 
 \ProcessOptions\relax
 
@@ -69,11 +73,14 @@
 %% ##################### Typography ##########################################
 
 \if@memoir
-    \RequirePackage{ebgaramond}
-    \RequirePackage[cmintegrals,cmbraces]{newtxmath}
-    % ebgaramond-maths is buggy - currently does not show numbers
-    % \RequirePackage{ebgaramond-maths} % needs to be loaded after newtxmath,
-    \RequirePackage{avant} % Avant Gothic for headings/captions
+    \if@nofonts\else
+        \RequirePackage{ebgaramond}
+        \RequirePackage[cmintegrals,cmbraces]{newtxmath}
+        % ebgaramond-maths is buggy - currently does not show numbers
+        % \RequirePackage{ebgaramond-maths} % needs to be loaded after newtxmath,
+        %\RequirePackage{avant} % Avant Gothic for headings/captions
+        \RequirePackage{tgadventor} % Updated version of Avant Gothic
+    \fi
 \else
     \RequirePackage{lmodern} % Latin modern font
 \fi
@@ -85,7 +92,7 @@
 \RequirePackage{babel} % Language control
 
 \if@memoir\if@knitr\else
-    \RequirePackage[hyperref]{xcolor} % Needs to be loaded before listings
+    \RequirePackage[hyperref,dvipsnames]{xcolor} % Needs to be loaded before listings
 \fi\fi
 
 \RequirePackage{lipsum} % to add filler text to template. Can remove.
@@ -98,7 +105,6 @@
 %\RequirePackage{gauss} % for matrix opetarations
 
 %\RequirePackage{} % conflicts with newtxmath which provides its own widehat
-
 
 \if@highlighting\RequirePackage{listings}\fi
 
@@ -152,20 +158,21 @@
             authordate,
             backend=biber,%
             bibencoding=inputenc,
-            %babel, % automatically loaded with american language
-            short, % always use short format
-            noibid, % never use ibid
-            strict, % experimental, tries to follow Manual for footnote formatting
+            short,% always use short format
+            noibid,% never use ibid
+            strict,% experimental, tries to follow Manual for footnote formatting
             maxbibnames=5,%
             minbibnames=3,%
-            uniquename=false, % Do not add initials if two authors have same name
+            maxcitenames=2,%
+            mincitenames=1,%
             numbermonth=false,%
-            uniquename=false,
-            useprefix=true, % print "von" etc (biber only)
-            giveninits=true, % Use initials for first and middle names
-            sortcites=true, % sort citations in text (when separated by comma)
-            date=year,
-            doi=only,isbn=false,eprint=false
+            uniquename=true, % Do not add initials if two authors have same name
+            uniquelist=true,
+            useprefix=true,% print "von" etc (biber only)
+            giveninits=true,% Use initials for first and middle names
+            sortcites=true,% sort citations in text (when separated by comma)
+            date=year,%
+            doi=only,isbn=false,eprint=false%
         ]{biblatex-chicago}
 
         \AtEveryBibitem{%
@@ -413,17 +420,6 @@
     %%%%%%%%%%%%%%%%
     % Chapter Style
 
-    % \makechapterstyle{ssethesis}{%
-    % \renewcommand*{\chaptitlefont}{\sffamily\LARGE}
-    % \renewcommand*{\chapnamefont}{\sffamily\huge}
-    % \renewcommand*{\chapnumfont}{\chapnamefont}
-    % \renewcommand*{\printchaptername}{\centering\chapnamefont \@chapapp}
-    % \renewcommand*{\printchapternonum}{\centering\chapnamefont}
-    % \setlength{\beforechapskip}{4\onelineskip}
-    % \setlength{\midchapskip}{2\onelineskip}
-    % \setlength{\afterchapskip}{2\onelineskip}
-    % }
-    % \chapterstyle{ssethesis}
     \makechapterstyle{section2}{%
         \renewcommand*{\chaptitlefont}{\sffamily\LARGE}
         \renewcommand*{\printchaptername}{}
@@ -452,16 +448,6 @@
     \setsubsubsecheadstyle{\sffamily\normalsize}
     \setbeforesubsubsecskip{-2.8ex plus -1ex minus -0.4ex}
     \setaftersubsubsecskip{1.3ex plus 0.3ex}
-
-    % Correct numbering without chapters
-    % Just use chapters, better.
-    % \renewcommand{\thesection}{\arabic{section}}
-    % \renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
-    % \makeatletter
-    % \let\l@subsection\l@section
-    % \let\l@section\l@chapter
-    % \makeatother
-    \setsecnumdepth{subsection} % Numbering subsections
 
     %%%%%%%%%%%%%%%%
     % Footnotes
