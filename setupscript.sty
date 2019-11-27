@@ -82,7 +82,12 @@
         \RequirePackage{tgadventor} % Updated version of Avant Gothic
     \fi
 \else
-    \RequirePackage{lmodern} % Latin modern font
+    \if@beamer
+        \RequirePackage{tgadventor}
+        \RequirePackage[cmintegrals,cmbraces]{newtxmath}
+    \else
+        \RequirePackage{lmodern} % Latin modern font
+    \fi
 \fi
 
 \RequirePackage[T1]{fontenc} % Should be loaded before inputenc
@@ -207,7 +212,6 @@
 % Tufte is buggy with caption/subcaption
 
 \if@beamer
-    % Caption works with beamer!
     \usepackage{caption}
     \usepackage{subcaption}
     \captionsetup{
