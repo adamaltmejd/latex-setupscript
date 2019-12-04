@@ -72,35 +72,16 @@
 
 %% ##################### Typography ##########################################
 
-\if@memoir
-    \if@nofonts\else
-        \RequirePackage{ebgaramond}
-        \RequirePackage[cmintegrals,cmbraces]{newtxmath}
-        % ebgaramond-maths is buggy - currently does not show numbers
-        % \RequirePackage{ebgaramond-maths} % needs to be loaded after newtxmath,
-        %\RequirePackage{avant} % Avant Gothic for headings/captions
-        \RequirePackage{tgadventor} % Updated version of Avant Gothic
-    \fi
-\else
-    \if@beamer
-        \RequirePackage{tgadventor}
-        \RequirePackage[cmintegrals,cmbraces]{newtxmath}
-    \else
-        \RequirePackage{lmodern} % Latin modern font
-    \fi
+% Check if pdflatex or lualatex is used to build document
+\RequirePackage{ifluatex}
+\ifluatex\else
+    \RequirePackage[T1]{fontenc} % Should be loaded before inputenc
+    \RequirePackage[utf8]{inputenc} %utf8x should be avoided, does not work with biblatex
 \fi
 
-\RequirePackage[T1]{fontenc} % Should be loaded before inputenc
-\RequirePackage[utf8]{inputenc} %utf8x should be avoided, does not work with biblatex
+\RequirePackage{babel} % Language control
 \RequirePackage[protrusion=true,expansion=true,final,babel]{microtype} % Better looking text
 \RequirePackage[babel]{csquotes} % Better looking quotes
-\RequirePackage{babel} % Language control
-
-\if@memoir\if@knitr\else
-    \RequirePackage[hyperref,dvipsnames]{xcolor} % Needs to be loaded before listings
-\fi\fi
-
-\RequirePackage{lipsum} % to add filler text to template. Can remove.
 
 %% ##################### MATH / CODE #########################################
 
@@ -108,8 +89,6 @@
 %\RequirePackage{accents} % provides different accents, does not work with ebgaramond-maths
 %\RequirePackage{mathrsfs} % provides \mathscr
 %\RequirePackage{gauss} % for matrix opetarations
-
-%\RequirePackage{} % conflicts with newtxmath which provides its own widehat
 
 \if@highlighting\RequirePackage{listings}\fi
 
@@ -120,7 +99,32 @@
     \fi
 \fi
 
-%% ##################### GRAPHICS ############################################
+%% ##################### FONTS #################################################
+
+\ifluatex
+    \usepackage{fontspec} % should be loaded after amsmath
+    \if@beamer
+        \usetheme{metropolis}
+        \usefonttheme{professionalfonts}
+        % \setsansfont{CMU Sans Serif}%{Arial}
+        % \setmainfont{CMU Serif}%{Times New Roman}
+        % \setmonofont{CMU Typewriter Text}%{Consolas}
+        \defaultfontfeatures{Ligatures=TeX}
+        \RequirePackage[mathrm=sym]{unicode-math}
+        \setmathfont{Fira Math}
+    \fi
+\else
+    \if@memoir\if@nofonts\else
+        \RequirePackage{ebgaramond}
+        \RequirePackage[cmintegrals,cmbraces]{newtxmath}
+        % ebgaramond-maths is buggy - currently does not show numbers
+        % \RequirePackage{ebgaramond-maths} % needs to be loaded after newtxmath,
+        %\RequirePackage{avant} % Avant Gothic for headings/captions
+        \RequirePackage{tgadventor} % Updated version of Avant Gothic
+    \fi\fi
+\fi
+
+%% ##################### GRAPHICS ##############################################
 
 \RequirePackage{graphicx}
 \DeclareGraphicsExtensions{.pdf,.png,.jpg,.eps}
@@ -134,6 +138,12 @@
 \if@memoir
     \RequirePackage{placeins} % Option [section] to create \FloatBarrier automatically at sections
 \fi
+
+\if@memoir\if@knitr\else
+    \RequirePackage[hyperref,dvipsnames]{xcolor} % Needs to be loaded before listings
+\fi\fi
+
+\RequirePackage{lipsum} % to add filler text to template. Can remove.
 
 %% ##################### TABLES ############################################
 
@@ -156,9 +166,7 @@
 %% ##################### BIBLIOGRAPHY ########################################
 
 \if@bibliography
-    \if@tufte\else
-        % tufte screws with bibs... [nobib] doesn't seem to work??
-
+    \if@memoir
         \usepackage[
             authordate,
             backend=biber,%
@@ -188,13 +196,22 @@
 
         \DeclareFieldFormat[legislation]{citetitle}{{#1}} % no italics of title of legislation in text
         \DeclareFieldFormat[thesis]{title}{\mkbibitalic{#1}}% italics thesis title in bibliography
+    \fi
+    \if@beamer
+        \usepackage[
+            style=authoryear-comp,backend=biber,bibencoding=inputenc,sorting=nyt,
+            maxbibnames=5,minbibnames=3,maxcitenames=2,mincitenames=1,
+            date=year,doi=false,isbn=false,eprint=false
+        ]{biblatex}
+        \AtEveryBibitem{%
+            \clearlist{language}%
+            \clearfield{month}%
+            \clearfield{day}%
+        }
 
-
-        \if@beamer
-            % http://tex.stackexchange.com/questions/202988/beamer-patching-footnotes-warning
-            \RequirePackage{silence}
-            \WarningFilter{biblatex}{Patching footnotes failed}
-        \fi
+        % http://tex.stackexchange.com/questions/202988/beamer-patching-footnotes-warning
+        \RequirePackage{silence}
+        \WarningFilter{biblatex}{Patching footnotes failed}
     \fi
 \fi
 
@@ -469,96 +486,139 @@
 %% ##################### BEAMER ################################################
 \if@beamer
 
-    \usetheme[height=0mm]{Rochester}
-    \usecolortheme[RGB={71,98,176}]{structure}
+    \metroset{sectionpage=none,
+              subsectionpage=none,
+              numbering=none,%fraction,titleformat=smallcaps,
+              progressbar=none}%foot
     \useoutertheme[subsection=false]{miniframes}
-    \useinnertheme{rectangles}
 
-    \setbeamercovered{transparent}
-    \setbeamertemplate{navigation symbols}{} % no navigation symbols
+    % FONTS
+    % (starred version "resets" font)
+    \setbeamerfont*{title}{family=\sffamily,series=\bfseries,size=\Huge,shape=\scshape}
+    \setbeamerfont*{author}{size=\large}
+    \setbeamerfont*{institute}{size=\normalsize}
+    \setbeamerfont*{date}{size=\normalsize}
+    \setbeamerfont*{frametitle}{size=\Large}
 
-    \setbeamerfont{title like}{shape=\scshape} % small caps
-    \setbeamerfont{frametitle}{shape=\Large}
-    \addtobeamertemplate{frametitle}{}{\vspace{-1em}} % smaller top margin (after title)
+    % Colors
+    % \setbeamercolor{section in head/foot}{fg=white, bg=mDarkTeal}
+    \setbeamercolor{section in head/foot}{bg=black!80, fg=black!2}
+    \setbeamercolor{frametitle}{fg=black!80, bg=black!2}
+    \setbeamercolor{item}{fg=black!80}
+    \setbeamercolor{normal text}{fg=black!80}
+    \setbeamercolor{title separator}{fg=black!80}
 
-    %% COLORING
-    \setbeamercolor*{structure}{fg=black}
-    \setbeamercolor*{frametitle}{fg=black,bg=white}
-    \setbeamercolor*{button}{fg=black}
-    \setbeamercolor*{palette tertiary}{fg=black,bg=black!10}
-    \setbeamercolor*{palette quaternary}{fg=black,bg=black!10}
-
-    %% FOOTNOTES
-    % allow footnote without number
-    \newcommand\blankfootnote[1]{%
-      \begingroup
-      \renewcommand\thefootnote{}\footnote{#1}%
-      \addtocounter{footnote}{-1}%
-      \endgroup
+    %%%
+    % FRAMETITLE
+    \makeatletter
+    \setbeamertemplate{frametitle}{%
+    \nointerlineskip%
+    \begin{beamercolorbox}[%
+        wd=\paperwidth,%
+        sep=0pt,%
+        %leftskip=\metropolis@frametitle@padding,%
+        %rightskip=\metropolis@frametitle@padding,%
+        ht=3ex,%above
+        dp=0ex,%below
+        ]{frametitle}%
+    \metropolis@frametitlestrut@start%
+    \centering\insertframetitle%
+    \nolinebreak%
+    \metropolis@frametitlestrut@end%
+    \end{beamercolorbox}%
     }
-    \renewcommand*\footnoterule{} % remove footnote ruler
-    \setbeamerfont{footnote}{size=\scriptsize}
+    \makeatother
 
-    % we dont use enumitem since it breaks beamer
-    %\setlist[itemize,1]{itemsep=1em}        % When using enumitem this is needed
-    %\setlist[itemize]{label=\scriptsize$\blacksquare$}
-    \setbeamertemplate{itemize item}{\scriptsize\raise1.25pt\hbox{\donotcoloroutermaths$\blacksquare$}}
-    \setbeamertemplate{itemize subitem}{\tiny\raise1.5pt\hbox{\donotcoloroutermaths$\blacktriangleright$}}
-    \setbeamertemplate{itemize subsubitem}{\tiny\raise1.5pt\hbox{\donotcoloroutermaths$\blacktriangleright$}}
+    %%%
+    % Miniframes navigation
 
-    \setbeamertemplate{enumerate item}[square]
-    %\setbeamercolor{item projected}{bg=black,fg=white}
+    \makeatletter
+    \setbeamertemplate{headline}{%
+    \vskip-0.8ex% remove whitespace above
+    \begin{beamercolorbox}{section in head/foot}%
+        \vskip2pt\insertnavigation{\paperwidth}\vskip-0.5ex%
+    \end{beamercolorbox}%
+    }
+    \makeatother
 
     % This code makes miniframe signs (small black circles) be on same row as sections
     \makeatletter
-        \patchcmd{\slideentry}{\advance\beamer@tempdim by -.05cm}{\advance\beamer@tempdim by\beamer@vboxoffset\advance\beamer@tempdim by\beamer@boxsize\advance\beamer@tempdim by 0.9\pgflinewidth}{}{}
-        \patchcmd{\slideentry}{\kern\beamer@tempdim}{\advance\beamer@tempdim by 2pt\advance\beamer@tempdim by\wd\beamer@sectionbox\kern\beamer@tempdim}{}{}
+    \patchcmd{\slideentry}{\advance\beamer@tempdim by -.05cm}{\advance\beamer@tempdim by\beamer@vboxoffset\advance\beamer@tempdim by\beamer@boxsize\advance\beamer@tempdim by 0.9\pgflinewidth}{}{}
+    \patchcmd{\slideentry}{\kern\beamer@tempdim}{\advance\beamer@tempdim by 2pt\advance\beamer@tempdim by\wd\beamer@sectionbox\kern\beamer@tempdim}{}{}
     \makeatother
 
-    % %% TOC
-    \setbeamerfont{tocfont}{series=\bfseries,size=\Large}
+    %%
+    % Footline
+    \makeatletter
+    \setbeamertemplate{footline}{%
+    \begin{beamercolorbox}[%
+        wd=\paperwidth,%
+        sep=3pt,%
+        ht=0.2ex,
+        dp=0.5ex
+    ]{footline}
+    % \usebeamerfont{page number in head/foot}%
+    % \usebeamertemplate*{frame footer}%
+    % \hfill%
+    % \usebeamertemplate*{frame numbering}
+    \end{beamercolorbox}
+    }
+    \makeatother
 
-    % Larger buttons
-    \setbeamertemplate{button}{\tikz
-      \node[
-      inner xsep=5pt,
-      draw=structure!95,
-      fill=white,
-      yshift=7pt,
-      xshift=0pt,
-      rounded corners=3pt]  {\normalsize\insertbuttontext};}
-
-    % %% FOOTER
-    % % \useoutertheme{infolines}
-    % \beamertemplatenavigationsymbolsempty   % No navigation
-    % % \setfootline{
-    % %     \insertshortinstitute, \insertshortdate
-    % %     \hfill slide \insertframenumber/\inserttotalframenumber
-    % % }
-    %     \setbeamertemplate{footline}
-    %     {
-    %       \leavevmode%
-    %       \hbox{%
-    %       \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
-    %         \usebeamerfont{author in head/foot}\insertsection
-    %       \end{beamercolorbox}%
-    %       \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
-    %         \usebeamerfont{title in head/foot}\insertsubsection
-    %       \end{beamercolorbox}%
-    %       \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
-    %         \usebeamerfont{date in head/foot}\insertshortdate{}\hspace*{2em}
-    %         \insertframenumber{} / \inserttotalframenumber\hspace*{2ex}
-    %       \end{beamercolorbox}}%
-    %       \vskip0pt%
-    %     }
-    %     \makeatother
-
-    % Footnote on right side
+    %% FOOTNOTES
+    \renewcommand*\footnoterule{} % remove footnote ruler
+    \setbeamerfont{footnote mark}{size=\tiny}
+    \setbeamerfont{footnote}{size=\scriptsize}
     \setbeamertemplate{footnote}{%
         \parindent 0em\noindent%
         \raggedleft%\raggedright
         \usebeamercolor{footnote}\hbox to 0.8em{\hfil\insertfootnotemark}\insertfootnotetext\par%
     }
+
+    % footnote without number
+    \newcommand\blankfootnote[1]{%
+      \begingroup%
+      \renewcommand\thefootnote{}\footnote{#1}%
+      \addtocounter{footnote}{-1}%
+      \endgroup%
+    }%
+
+    %%
+    % TITLE PAGE
+    \setbeamertemplate{title}{\inserttitle\par}
+    \setbeamertemplate{subtitle}{\insertsubtitle\par}
+    \setbeamertemplate{author}{\insertauthor\par}
+    \setbeamertemplate{institute}{\insertinstitute\par}
+    \setbeamertemplate{date}{\insertdate\par}
+    \makeatletter\setlength{\metropolis@titleseparator@linewidth}{5pt}\makeatother
+
+    \setbeamertemplate{title page}{%
+    \begin{minipage}[b][\paperheight]{\textwidth}
+        % \ifx\inserttitlegraphic\@empty\else\usebeamertemplate*{title graphic}\fi
+        \vfill%
+        \begin{center}
+        \ifx\inserttitle\@empty\else\usebeamertemplate*{title}\fi
+        \ifx\insertsubtitle\@empty\else\usebeamertemplate*{subtitle}\fi
+        \vspace*{-0.5ex}
+        \usebeamertemplate*{title separator}
+        % \vspace*{3ex}
+        \ifx\beamer@shortauthor\@empty\else\vspace*{2ex}\usebeamertemplate*{author}\fi
+        \ifx\insertdate\@empty\else\vspace*{2ex}\usebeamertemplate*{date}\fi
+        \ifx\insertinstitute\@empty\else\vspace*{2ex}\usebeamertemplate*{institute}\fi
+        \end{center}
+        \vfill
+        \vspace*{2mm}
+    \end{minipage}
+    }
+
+    % Hide covered items
+    \setbeamercovered{invisible}
+
+    % Itemize/Enumerate shapes
+    \setbeamertemplate{itemize item}{\scriptsize\raise1.25pt\hbox{\donotcoloroutermaths$\blacksquare$}}
+    \setbeamertemplate{itemize subitem}{\tiny\raise1.5pt\hbox{\donotcoloroutermaths$\blacktriangleright$}}
+    \setbeamertemplate{itemize subsubitem}{\tiny\raise1.5pt\hbox{\donotcoloroutermaths$\blacktriangleright$}}
+    \setbeamertemplate{enumerate item}[square]
 
 \fi
 
