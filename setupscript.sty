@@ -185,10 +185,9 @@
             maxcitenames=2,%
             mincitenames=1,%
             numbermonth=false,%
-            % uniquename=true, % Do not add initials if two authors have same name
-            uniquelist=true,
-            useprefix=true,% print "von" etc (biber only)
+            uniquename=init, % Do not add initials if two authors have same name
             giveninits=true,% Use initials for first and middle names
+            useprefix=true,% print "von" etc (biber only)
             sortcites=true,% sort citations in text (when separated by comma)
             date=year,%
             doi=only,isbn=false,eprint=false%
