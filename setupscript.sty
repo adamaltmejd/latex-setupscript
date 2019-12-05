@@ -103,15 +103,22 @@
 
 \ifluatex
     \usepackage{fontspec} % should be loaded after amsmath
+    \if@memoir\if@nofonts\else
+        \defaultfontfeatures{Ligatures=TeX}
+        \RequirePackage[math-style=ISO, bold-style=ISO]{unicode-math}
+        \setmainfont{EB Garamond} %You should have installed the font
+        \setmathfont{Garamond-Math.otf}[StylisticSet={7,9}] %Use StylisticSet that you like
+        \setsansfont{TeX Gyre Adventor}
+    \fi\fi
     \if@beamer
+        \usefonttheme{professionalfonts} % prohibit beamer from setting fonts
         \usetheme{metropolis}
-        \usefonttheme{professionalfonts}
-        % \setsansfont{CMU Sans Serif}%{Arial}
-        % \setmainfont{CMU Serif}%{Times New Roman}
-        % \setmonofont{CMU Typewriter Text}%{Consolas}
         \defaultfontfeatures{Ligatures=TeX}
         \RequirePackage[mathrm=sym]{unicode-math}
-        \setmathfont{Fira Math}
+        \setmainfont{Fira Sans} % Metropolis uses light, we overwrite so math doesn't look wierd
+        \setsansfont{Fira Sans}
+        \setmathfont{Fira Math} % Not yet available in light mode
+        % \setmonofont{Fira Sans Mono}
     \fi
 \else
     \if@memoir\if@nofonts\else
@@ -119,7 +126,6 @@
         \RequirePackage[cmintegrals,cmbraces]{newtxmath}
         % ebgaramond-maths is buggy - currently does not show numbers
         % \RequirePackage{ebgaramond-maths} % needs to be loaded after newtxmath,
-        %\RequirePackage{avant} % Avant Gothic for headings/captions
         \RequirePackage{tgadventor} % Updated version of Avant Gothic
     \fi\fi
 \fi
