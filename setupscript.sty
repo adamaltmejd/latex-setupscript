@@ -216,6 +216,9 @@
 
         \DeclareFieldFormat[legislation]{citetitle}{{#1}} % no italics of title of legislation in text
         \DeclareFieldFormat[thesis]{title}{\mkbibitalic{#1}}% italics thesis title in bibliography
+
+        \RequirePackage{silence}
+        \WarningFilter{biblatex-chicago}{Since you are using the 'memoir' class}
     \fi
     \if@beamer
         \usepackage[
