@@ -66,6 +66,18 @@
 
 \ProcessOptions\relax
 
+\RequirePackage{ifxetex,ifluatex}
+\newif\ifxetexorluatex
+\ifxetex
+  \xetexorluatextrue
+\else
+  \ifluatex
+    \xetexorluatextrue
+  \else
+    \xetexorluatexfalse
+  \fi
+\fi
+
 %% ###########################################################################
 %% ##################### PREAMBLE ############################################
 %% ###########################################################################
@@ -73,14 +85,18 @@
 %% ##################### Typography ##########################################
 
 % Check if pdflatex or lualatex is used to build document
-\RequirePackage{ifluatex}
-\ifluatex\else
+\ifxetexorluatex\else
     \RequirePackage[T1]{fontenc} % Should be loaded before inputenc
     \RequirePackage[utf8]{inputenc} %utf8x should be avoided, does not work with biblatex
 \fi
 
 \RequirePackage{babel} % Language control
-\RequirePackage[protrusion=true,expansion=true,final,babel]{microtype} % Better looking text
+\RequirePackage[babel]{microtype} %automatically enables protrusion and expansion when possible
+
+\ifxetexorluatex\else
+    \microtypesetup{tracking=true}
+\fi
+
 \RequirePackage[babel]{csquotes} % Better looking quotes
 
 %% ##################### MATH / CODE #########################################
@@ -101,12 +117,12 @@
 
 %% ##################### FONTS #################################################
 
-\ifluatex
+\ifxetexorluatex
     \usepackage{fontspec} % should be loaded after amsmath
     \if@memoir\if@nofonts\else
         \defaultfontfeatures{Ligatures=TeX}
         \RequirePackage[math-style=ISO, bold-style=ISO]{unicode-math}
-        \setmainfont{EB Garamond} %You should have installed the font
+        \setmainfont{EB Garamond}
         \setmathfont{Garamond-Math.otf}[StylisticSet={7,9}] %Use StylisticSet that you like
         \setsansfont{TeX Gyre Adventor}
     \fi\fi
@@ -124,9 +140,8 @@
     \if@memoir\if@nofonts\else
         \RequirePackage{ebgaramond}
         \RequirePackage[cmintegrals,cmbraces]{newtxmath}
-        % ebgaramond-maths is buggy - currently does not show numbers
-        % \RequirePackage{ebgaramond-maths} % needs to be loaded after newtxmath,
-        \RequirePackage{tgadventor} % Updated version of Avant Gothic
+        \RequirePackage{ebgaramond-maths} % needs to be loaded after newtxmath,
+        \RequirePackage{tgadventor} % Sansfont - updated version of Avant Gothic
     \fi\fi
 \fi
 
@@ -410,7 +425,7 @@
     \setlength{\absrightindent}{0pt}
     \setlength{\absparindent}{0pt}
     \setlength{\absparsep}{0pt}
-    \setlength{\abstitleskip}{5ex}
+    \setlength{\abstitleskip}{-4ex}
 
     %%%%%%%%%%%%%%%%
     % Page styles and counters
