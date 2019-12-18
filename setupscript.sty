@@ -249,27 +249,6 @@
 %% ##################### LAYOUT ################################################
 %% #############################################################################
 
-% Math definitions/environments, not for beamer
-\if@beamer\else
-    % NON-FRAMED THEOREMS
-    \RequirePackage[amsmath,thmmarks,hyperref]{ntheorem}
-    \theoremstyle{plain}
-    \theoremheaderfont{\normalfont\bfseries}\theorembodyfont{\normalfont}
-    \theoremseparator{:}
-    \newtheorem{definition}{Definition}
-    \newtheorem{proposition}{Proposition}
-    \newtheorem{theorem}{Theorem}
-    \newtheorem{axiom}{Axiom}
-    \newtheorem{corollary}{Corollary}
-    \newtheorem{lemma}{Lemma}
-    \newtheorem{remark}{Remark}
-    \newtheorem{example}{Example}
-    %Proof
-    \theoremstyle{nonumberplain}
-    \newtheorem{proof}{Proof}
-    \theoremsymbol{\ensuremath{\blacksquare}}
-\fi
-
 %% ##################### MEMOIR ################################################
 \if@memoir
 
