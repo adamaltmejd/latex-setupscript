@@ -2,16 +2,15 @@
 %   ###    SETUPSCRIPT.sty     ###
 %   ##############################
 %
-% Custom package for loading preamble and abbrevations into my LaTeX documents.
-% Compiles with pdfLaTeX and biber (if bibliography option), with TeX Live 2014
+% Custom LaTeX preamble and layout for presentations and papers.
 %
 % ### USAGE
-%     - In your preamble specify:
-%     - \documentclass[<options>]{memoir/tufte/beamer}
+%     - Top lines of document:
+%     - \documentclass[<options>]{memoir/beamer}
 %     - \usepackage[<options>]{setupscript}
 %
 % ### OPTIONS
-%     - REQUIRED: [memoir] or [tufte] or [beamer] document class-specific setups
+%     - REQUIRED: [memoir] or [beamer] document class-specific setups
 %     - [bibliography] loads biblatex and formats bibliography
 %     - [nofonts] to skip loading custom fonts
 
@@ -23,10 +22,6 @@
 \newif\if@memoir\@memoirfalse
 \DeclareOption{memoir}{
   \@memoirtrue
-}
-\newif\if@tufte\@tuftefalse
-\DeclareOption{tufte}{
-  \@tuftetrue
 }
 \newif\if@beamer\@beamerfalse
 \DeclareOption{beamer}{
@@ -203,7 +198,6 @@
 %% ######################### CAPTIONS ##########################################
 
 % Memoir has builting captioning
-% Tufte is buggy with caption/subcaption
 
 \if@beamer
     \usepackage{caption}
