@@ -13,13 +13,10 @@
 % ### OPTIONS
 %     - REQUIRED: [memoir] or [tufte] or [beamer] document class-specific setups
 %     - [bibliography] loads biblatex and formats bibliography
-%     - [framedtheorem] loads mdframed and styles for framed theorem envs
-%
-% ### TO DO
-% - Add more options for specific title page layouts
+%     - [nofonts] to skip loading custom fonts
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{setupscript}[2019/10/24 Adam Altmejd's custom setup script]
+\ProvidesPackage{setupscript}[2019/12/05 Adam Altmejd's custom setup script]
 
 %% ##################### CLASS SPECIFIC PACKAGES #############################
 
@@ -38,26 +35,6 @@
 \newif\if@bibliography\@bibliographyfalse
 \DeclareOption{bibliography}{
   \@bibliographytrue
-}
-\newif\if@pgf\@pgffalse
-\DeclareOption{pgf}{
-  \@pgftrue
-}
-\newif\if@theorem\@theoremfalse
-\DeclareOption{theorem}{
-  \@theoremtrue
-}
-\newif\if@framedtheorem\@framedtheoremfalse
-\DeclareOption{framedtheorem}{
-  \@framedtheoremtrue
-}
-\newif\if@knitr\@knitrfalse
-\DeclareOption{knitr}{
-  \@knitrtrue
-}
-\newif\if@highlighting\@highlightingfalse
-\DeclareOption{highlighting}{
-  \@highlightingtrue
 }
 \newif\if@nofonts\@nofontsfalse
 \DeclareOption{nofonts}{
@@ -102,18 +79,6 @@
 %% ##################### MATH / CODE #########################################
 
 \RequirePackage{amsmath,amssymb,amsfonts}
-%\RequirePackage{accents} % provides different accents, does not work with ebgaramond-maths
-%\RequirePackage{mathrsfs} % provides \mathscr
-%\RequirePackage{gauss} % for matrix opetarations
-
-\if@highlighting\RequirePackage{listings}\fi
-
-\if@beamer\else % Beamer automatically loads amsthm for theorems
-    \if@theorem\RequirePackage[amsmath,thmmarks,hyperref]{ntheorem}\fi
-    \if@framedtheorem
-        \RequirePackage{mdframed} %options declared later
-    \fi
-\fi
 
 %% ##################### FONTS #################################################
 
@@ -145,26 +110,17 @@
     \fi\fi
 \fi
 
+\RequirePackage{lipsum} % to add filler text to template. Can remove.
+
 %% ##################### GRAPHICS ##############################################
 
 \RequirePackage{graphicx}
 \DeclareGraphicsExtensions{.pdf,.png,.jpg,.eps}
 
-\if@pgf
-    \RequirePackage{tikz,pgfplots}
-    \usetikzlibrary{backgrounds,trees,positioning,arrows,calc}
-    \pgfplotsset{compat=newest}
-\fi
-
 \if@memoir
     \RequirePackage{placeins} % Option [section] to create \FloatBarrier automatically at sections
-\fi
-
-\if@memoir\if@knitr\else
     \RequirePackage[hyperref,dvipsnames]{xcolor} % Needs to be loaded before listings
-\fi\fi
-
-\RequirePackage{lipsum} % to add filler text to template. Can remove.
+\fi
 
 %% ##################### TABLES ############################################
 
@@ -194,7 +150,7 @@
             bibencoding=inputenc,
             short,% always use short format
             noibid,% never use ibid
-            strict,% experimental, tries to follow Manual for footnote formatting
+            %strict,% experimental, tries to follow Manual for footnote formatting
             maxbibnames=5,%
             minbibnames=3,%
             maxcitenames=2,%
@@ -296,57 +252,22 @@
 % Math definitions/environments, not for beamer
 \if@beamer\else
     % NON-FRAMED THEOREMS
-    \if@theorem
-        \theoremstyle{plain}
-        \theoremheaderfont{\normalfont\bfseries}\theorembodyfont{\normalfont}
-        \theoremseparator{:}
-        \newtheorem{definition}{Definition}
-        \newtheorem{proposition}{Proposition}
-        \newtheorem{theorem}{Theorem}
-        \newtheorem{axiom}{Axiom}
-        \newtheorem{corollary}{Corollary}
-        \newtheorem{lemma}{Lemma}
-        \newtheorem{remark}{Remark}
-        \newtheorem{example}{Example}
-        %Proof
-        \theoremstyle{nonumberplain}
-        \newtheorem{proof}{Proof}
-        \theoremsymbol{\ensuremath{\blacksquare}}
-    \fi
-
-    % FRAMED THEOREMS
-    \if@framedtheorem
-    \mdfsetup{
-        framemethod=tikz,
-        ntheorem=true
-    }
-        \mdfdefinestyle{theoremstyle}{%
-            linecolor = gray!20,
-            linewidth = 1pt,
-            innerleftmargin = 5pt,
-            innerrightmargin = 5pt,
-            innertopmargin = 0pt,
-            leftmargin = 0pt,
-            rightmargin = 0pt,
-            frametitlerule = true,
-            frametitlebackgroundcolor = gray!20,
-            innertopmargin = \topskip,
-            middlelinewidth = 1pt,
-            ntheorem = true,
-            nobreak = true
-        }
-        \theorempreskip{5pt}
-        \theorempostskip{10pt}
-        %Example: \mdtheorem[<mdframed−options>]{<envname>}[<numberedlike>]{<caption>}[<within>]
-        \mdtheorem[style=theoremstyle]{proposition}{Proposition}%[section]
-        \mdtheorem[style=theoremstyle]{proof}{Proof}%[section]
-        \mdtheorem[style=theoremstyle]{theorem}{Theorem}%[section]
-        \mdtheorem[style=theoremstyle]{definition}{Definition}%[section]
-        \mdtheorem[style=theoremstyle]{axiom}{Axiom}%[section]
-        \mdtheorem[style=theoremstyle]{corollary}{Corollary}%[section]
-        \mdtheorem[style=theoremstyle]{lemma}{Lemma}%[section]
-        \mdtheorem[style=theoremstyle]{remark}{Remark}%[section]
-    \fi
+    \RequirePackage[amsmath,thmmarks,hyperref]{ntheorem}
+    \theoremstyle{plain}
+    \theoremheaderfont{\normalfont\bfseries}\theorembodyfont{\normalfont}
+    \theoremseparator{:}
+    \newtheorem{definition}{Definition}
+    \newtheorem{proposition}{Proposition}
+    \newtheorem{theorem}{Theorem}
+    \newtheorem{axiom}{Axiom}
+    \newtheorem{corollary}{Corollary}
+    \newtheorem{lemma}{Lemma}
+    \newtheorem{remark}{Remark}
+    \newtheorem{example}{Example}
+    %Proof
+    \theoremstyle{nonumberplain}
+    \newtheorem{proof}{Proof}
+    \theoremsymbol{\ensuremath{\blacksquare}}
 \fi
 
 %% ##################### MEMOIR ################################################
@@ -641,68 +562,6 @@
     \setbeamertemplate{itemize subsubitem}{\tiny\raise1.5pt\hbox{\donotcoloroutermaths$\blacktriangleright$}}
     \setbeamertemplate{enumerate item}[square]
 
-\fi
-
-%% ##################### SYNTAX HIGHLIGHTING ###################################
-
-\if@highlighting
-    % Syntax highlighting using listings
-    \definecolor{mygreen}{RGB}{28,172,0}
-    \definecolor{mymagenta}{RGB}{170,55,241}
-
-    \lstdefinelanguage{Stata}{%
-        morekeywords = {},
-        sensitive = false,
-        morecomment = [l]{///},
-        morecomment = [l]{*},
-        morecomment = [s]{/*}{*/},
-        morestring = [b]",
-    }
-    \lstset{language = Stata,
-        keywords = {break,case,catch,continue,else,elseif,end,for,function,
-        global,if,otherwise,persistent,return,switch,try,while},
-        basicstyle = \footnotesize,
-        keywordstyle = \color{blue},
-        identifierstyle = \color{black},
-        stringstyle = \color{mymagenta},
-        commentstyle = \color{mygreen},
-        showspaces = false,           % Show spaces
-        showstringspaces = false,     % Show spaces in strings
-        showtabs = false,             % Show tabs
-        tabsize = 2,                % Size of tabs
-        captionpos = b,             % Caption position
-        numbers = left,             % Line numbers position
-        numberstyle = {\footnotesize \color{gray}},
-        stepnumber = 1,
-        numbersep = 8pt,
-        breaklines = true,            % Line breaks
-        breakatwhitespace=false     % Break only on white space
-    }
-    \lstloadlanguages{R}
-    \lstdefinelanguage{myR}[]{R}{%
-        morekeywords={acf,ar,arima,arima.sim,colMeans,colSums,is.na,is.null, mapply,ms,na.rm,nlmin,replicate,row.names,rowMeans,rowSums,seasonal, sys.time,system.time,ts.plot,which.max,which.min},
-        deletekeywords={Call},
-        alsoletter={.\%},
-        alsoother={:_\$},
-        basicstyle = \small\ttfamily,
-        keywordstyle = \color{blue},
-        identifierstyle = \color{black},
-        stringstyle = \color{mymagenta},
-        commentstyle = \color{black}\textsl,
-        extendedchars=true,
-        showspaces = false,             % Show spaces
-        showstringspaces = false,       % Show spaces in strings
-        showtabs = false,               % Show tabs
-        tabsize = 2,                    % Size of tabs
-        captionpos = b,                 % Caption position
-        breaklines = true,              % Line breaks
-        breakatwhitespace=false,        % Break only on white space
-        numbers = none,                 % Line numbers position
-        numberstyle = {\tiny \color{gray}},
-        stepnumber = 1,
-        numbersep = 5pt,
-        index=[1][keywords]
-    }
 \fi
 
 %% ##################### ABBREVIATIONS/COMMANDS ################################
