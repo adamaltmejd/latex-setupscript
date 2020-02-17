@@ -50,6 +50,11 @@
   \fi
 \fi
 
+% Force xetex/luatex for beamer
+\ifxetexorluatex\else\if@beamer
+    \PackageError{setupscript}{Beamer requires xetex or luatex.}{}
+\fi\fi
+
 %% ###########################################################################
 %% ##################### PREAMBLE ############################################
 %% ###########################################################################
