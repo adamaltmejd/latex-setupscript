@@ -15,7 +15,7 @@
 %     - [nofonts] to skip loading custom fonts
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{setupscript}[2019/12/05 Adam Altmejd's custom setup script]
+\ProvidesPackage{setupscript}[2021/06/17 Adam Altmejd's custom setup script]
 
 %% ##################### CLASS SPECIFIC PACKAGES #############################
 
@@ -85,10 +85,22 @@
 \ifxetexorluatex
     \usepackage{fontspec} % should be loaded after amsmath
     \if@memoir\if@nofonts\else
-        \defaultfontfeatures{Ligatures=TeX}
         \RequirePackage[math-style=ISO, bold-style=ISO]{unicode-math}
-        \setmainfont{EB Garamond}
-        \setmathfont{Garamond-Math.otf}[StylisticSet={7,9}] %Use StylisticSet that you like
+        \setmainfont{EBGaramond}[
+            Path         = ./fonts/,
+            Extension    = .otf,
+            UprightFont  = *12-Regular, % set EB Garamond 12 as default upright font
+            UprightFeatures = {SizeFeatures = {
+                    {Size = -10.1, Font = *08-Regular}, % use EB Garamond 08 for 10pt size and smaller
+                    {Size = 10.1-}}}, % use default upright font for larger than 10pt size
+            ItalicFont = *12-Italic, % set EB Garamond 12 as default italic font
+            ItalicFeatures = {SizeFeatures = {
+                    {Size = -10.1, Font = *08-Italic}, % use EB Garamond 08 for 10pt size and smaller
+                    {Size = 10.1-}}}, % use default upright font for larger than 10pt size
+            SmallCapsFeatures = {Letters = SmallCaps, RawFeature={+c2sc,+scmp}},
+            Ligatures = {Common, TeX},
+            Numbers = {Proportional, OldStyle}]
+        \setmathfont[Path = fonts/,StylisticSet={7,9}]{Garamond-Math.otf} %Use StylisticSet that you like
         \setsansfont{TeX Gyre Adventor}
     \fi\fi
     \if@beamer
@@ -284,22 +296,25 @@
     %%%%%%%%%%%%%%%
     % Figures
 
+    \newsubfloat{figure}% Allow subfloats in figure environment
+    \setfloatadjustment{figure}{\centering}
+    \setfloatadjustment{table}{\footnotesize\centering}
+
     % Figure Captions (and notes)
+    \setlength{\abovecaptionskip}{5pt}
+    \setlength{\belowcaptionskip}{5pt}
     \captionstyle[\centering]{\raggedright} % [short caption]{long caption}
     \captiondelim{. }
     \captionnamefont{\normalsize\sffamily} % \sffamily
     \captiontitlefont{\normalsize\sffamily} % \sffamily
 
     % To add a note below the figure use \figurenotes{}
-    \newcommand{\figurenotes}[1]{%
-    \captionstyle[\centering]{} % \raggedright
-    \captiontitlefont{\footnotesize\rmfamily}
-    \legend{Notes: #1}}
-
-    \newsubfloat{figure}% Allow subfloats in figure environment
-
-    \setfloatadjustment{figure}{\centering}
-    \setfloatadjustment{table}{\footnotesize\centering}
+    \newcommand{\figurenotes}[2][\linewidth]{%
+        \captionstyle[\centering]{}%
+        \changecaptionwidth\captionwidth{#1}%
+        \captiontitlefont{\footnotesize\rmfamily}%
+        \legend{\emph{Notes:~}#2}%
+    }
 
     %%%%%%%%%%%%%%%%
     % TITLE
