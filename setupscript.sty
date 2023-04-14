@@ -110,21 +110,23 @@
         \usetheme{metropolis}
         \defaultfontfeatures{Ligatures=TeX}
         \RequirePackage[mathrm=sym]{unicode-math}
-        \setmainfont{FiraGO}[
-            Path        = ../fonts/,
-            Extension   = .otf,
-            UprightFont = *-Regular,
-            ItalicFont  = *-Italic,
-            BoldFont    = *-Bold
-        ]
-        \setsansfont{FiraGO}[
-            Path        = ../fonts/,
-            Extension   = .otf,
-            UprightFont = *-Regular,
-            ItalicFont  = *-Italic,
-            BoldFont    = *-Bold
-        ]
-        \setmathfont[Path = ../fonts/]{FiraMath-Regular.otf} % Not yet available in light mode
+        \if@nofonts\else
+            \setmainfont{FiraGO}[
+                Path        = ../fonts/,
+                Extension   = .otf,
+                UprightFont = *-Regular,
+                ItalicFont  = *-Italic,
+                BoldFont    = *-Bold
+            ]
+            \setsansfont{FiraGO}[
+                Path        = ../fonts/,
+                Extension   = .otf,
+                UprightFont = *-Regular,
+                ItalicFont  = *-Italic,
+                BoldFont    = *-Bold
+            ]
+            \setmathfont[Path = ../fonts/]{FiraMath-Regular.otf} % Not yet available in light mode
+        \fi
     \fi
 \else
     \if@memoir\if@nofonts\else
