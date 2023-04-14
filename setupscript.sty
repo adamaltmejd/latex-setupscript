@@ -87,31 +87,44 @@
     \if@memoir\if@nofonts\else
         \RequirePackage[math-style=ISO, bold-style=ISO]{unicode-math}
         \setmainfont{EBGaramond}[
-            Path         = ./fonts/,
+            Path         = ../fonts/,
             Extension    = .otf,
-            UprightFont  = *12-Regular, % set EB Garamond 12 as default upright font
-            UprightFeatures = {SizeFeatures = {
-                    {Size = -10.1, Font = *08-Regular}, % use EB Garamond 08 for 10pt size and smaller
-                    {Size = 10.1-}}}, % use default upright font for larger than 10pt size
-            ItalicFont = *12-Italic, % set EB Garamond 12 as default italic font
-            ItalicFeatures = {SizeFeatures = {
-                    {Size = -10.1, Font = *08-Italic}, % use EB Garamond 08 for 10pt size and smaller
-                    {Size = 10.1-}}}, % use default upright font for larger than 10pt size
+            UprightFont  = *-Regular,
+            ItalicFont = *-Italic,
+            BoldFont = *-Bold,
             SmallCapsFeatures = {Letters = SmallCaps, RawFeature={+c2sc,+scmp}},
             Ligatures = {Common, TeX},
-            Numbers = {Proportional, OldStyle}]
-        \setmathfont[Path = fonts/,StylisticSet={7,9}]{Garamond-Math.otf} %Use StylisticSet that you like
-        \setsansfont{TeX Gyre Adventor}
+            Numbers = {Proportional, OldStyle}
+        ]
+        \setsansfont{LibertinusSans}[
+            Path        = ../fonts/,
+            Extension   = .otf,
+            UprightFont = *-Regular,
+            ItalicFont  = *-Italic,
+            BoldFont    = *-Bold
+        ]
+        \setmathfont[Path = ../fonts/,StylisticSet={7,9}]{Garamond-Math.otf}
     \fi\fi
     \if@beamer
         \usefonttheme{professionalfonts} % prohibit beamer from setting fonts
         \usetheme{metropolis}
         \defaultfontfeatures{Ligatures=TeX}
         \RequirePackage[mathrm=sym]{unicode-math}
-        \setmainfont{Fira Sans} % Metropolis uses light, we overwrite so math doesn't look wierd
-        \setsansfont{Fira Sans}
-        \setmathfont{Fira Math} % Not yet available in light mode
-        % \setmonofont{Fira Sans Mono}
+        \setmainfont{FiraGO}[
+            Path        = ../fonts/,
+            Extension   = .otf,
+            UprightFont = *-Regular,
+            ItalicFont  = *-Italic,
+            BoldFont    = *-Bold
+        ]
+        \setsansfont{FiraGO}[
+            Path        = ../fonts/,
+            Extension   = .otf,
+            UprightFont = *-Regular,
+            ItalicFont  = *-Italic,
+            BoldFont    = *-Bold
+        ]
+        \setmathfont[Path = ../fonts/]{FiraMath-Regular.otf} % Not yet available in light mode
     \fi
 \else
     \if@memoir\if@nofonts\else
@@ -140,17 +153,17 @@
 \sisetup{
 	group-digits = integer, % group integers in groups of 3 (not decimals)
 	input-decimal-markers = {.},
-	table-number-alignment = center, %  requires defining pre post spacing
 	input-open-uncertainty = {},
 	input-close-uncertainty = {},
-	table-align-text-pre = false,
-    table-align-text-post = false,
-    table-format = -2.2, % defaults, can easily be changed for specific table
-    table-space-text-pre ={(},
-    table-space-text-post={)}
+    table-alignment-mode = format,
+    table-number-alignment = right,
+    table-text-alignment = right,
+	table-align-text-before = false,
+    table-align-text-after = false,
 }
 \RequirePackage{booktabs} % Better looking tables
 \RequirePackage{threeparttable}
+\RequirePackage{makecell}
 
 %% ##################### BIBLIOGRAPHY ########################################
 
@@ -168,12 +181,12 @@
             maxcitenames=2,%
             mincitenames=1,%
             numbermonth=false,%
-            uniquename=init, % Do not add initials if two authors have same name
+            uniquename=false, % Do not add initials if two authors have same name
             giveninits=true,% Use initials for first and middle names
             useprefix=true,% print "von" etc (biber only)
             sortcites=true,% sort citations in text (when separated by comma)
             date=year,%
-            doi=only,isbn=false,eprint=false%
+            doi=false,isbn=false,eprint=false%
         ]{biblatex-chicago}
 
         \AtEveryBibitem{%
@@ -326,7 +339,7 @@
                 \begin{tabular}[t]{c}}
     \postauthor{\end{tabular}\par\end{center}}
     \predate{\begin{center}\large}
-    \postdate{\par\end{center}}
+    \postdate{\end{center}\par}
 
     \setlength{\droptitle}{30pt}
     \titlingpageend{\clearforchapter}{\clearforchapter}
@@ -336,11 +349,11 @@
     % Abstract
     \renewcommand{\abstractnamefont}{\sffamily\Large} %\small\normalfont\bfseries
     \renewcommand{\abstracttextfont}{\normalfont\normalsize\noindent\ignorespaces} %\small
-    \setlength{\absleftindent}{0pt}
-    \setlength{\absrightindent}{0pt}
+    \setlength{\absleftindent}{15pt}
+    \setlength{\absrightindent}{15pt}
     \setlength{\absparindent}{0pt}
     \setlength{\absparsep}{0pt}
-    \setlength{\abstitleskip}{-4ex}
+    \setlength{\abstitleskip}{0pt}
 
     %%%%%%%%%%%%%%%%
     % Page styles and counters
@@ -354,8 +367,9 @@
     \makeoddfoot{setupscript}{}{\normalfont\sffamily\thepage}{}
     \makepsmarks{setupscript}{%
         \nouppercaseheads % use smallcaps instead of uppercase
-        \createmark      {chapter}  {both}{nonumber}   {\@chapapp\ }{. \ }
+        \createmark      {chapter}  {both}{nonumber}    {\@chapapp\ }{. \ }
         %\createmark      {section}  {right}{nonumber}   {}           {. \ }
+        %\createmark      {subsection}  {right}{nonumber}   {}           {. \ }
         \createplainmark {toc}      {both}              {\contentsname}
         \createplainmark {lof}      {both}              {\listfigurename}
         \createplainmark {lot}      {both}              {\listtablename}
@@ -364,12 +378,10 @@
         \createplainmark {glossary} {both}              {\glossaryname}
     }
 
-
     % Use empty for float-only pages
     \mergepagefloatstyle{mergedstyle}{setupscript}{empty}
     \pagestyle{mergedstyle}
 
-    % \aliaspagestyle{chapter}{empty} % no pagestyle on chapter page
     \counterwithout{footnote}{chapter} % continous numbering of footnotes
     \setsecnumdepth{subsection}
 
@@ -382,7 +394,7 @@
         \renewcommand*{\chapternamenum}{}
         \renewcommand*{\chapnamefont}{}
         \renewcommand*{\chapnumfont}{\chaptitlefont}
-        \renewcommand*{\printchapternum}{\chapnumfont \thechapter}
+        \renewcommand*{\printchapternum}{\chapnumfont\thechapter}
         \renewcommand*{\afterchapternum}{\quad}
         \setlength{\beforechapskip}{2\onelineskip}
         \setlength{\midchapskip}{\onelineskip}
@@ -411,6 +423,10 @@
     \setlength{\footmarkwidth} {0em}
     \setlength{\footmarksep}   {0em}
     \setlength{\footparindent} {\parindent}
+
+    % Thanks
+    \setlength{\thanksmarkwidth}{0em}
+    \setlength{\thanksmarksep}{0em} % no indent
 
     %%%%%%%%%%%%%%%%
     % Bibliography
@@ -541,7 +557,7 @@
         \ifx\insertdate\@empty\else\vspace*{2ex}\usebeamertemplate*{date}\fi
         \ifx\insertinstitute\@empty\else\vspace*{2ex}\usebeamertemplate*{institute}\fi
         \end{center}
-        \vfill
+        \vfill%
         \vspace*{2mm}
     \end{minipage}
     }
