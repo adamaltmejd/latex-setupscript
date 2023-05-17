@@ -87,7 +87,7 @@
     \if@memoir\if@nofonts\else
         \RequirePackage[math-style=ISO, bold-style=ISO]{unicode-math}
         \setmainfont{EBGaramond}[
-            Path         = ../fonts/,
+            % Path         = fonts/,
             Extension    = .otf,
             UprightFont  = *-Regular,
             ItalicFont = *-Italic,
@@ -97,13 +97,16 @@
             Numbers = {Proportional, OldStyle}
         ]
         \setsansfont{LibertinusSans}[
-            Path        = ../fonts/,
+            % Path        = fonts/,
             Extension   = .otf,
             UprightFont = *-Regular,
             ItalicFont  = *-Italic,
             BoldFont    = *-Bold
         ]
-        \setmathfont[Path = ../fonts/,StylisticSet={7,9}]{Garamond-Math.otf}
+        \setmathfont{Garamond-Math.otf}[
+            % Path = fonts/,
+            StylisticSet={7,9}
+        ]
     \fi\fi
     \if@beamer
         \usefonttheme{professionalfonts} % prohibit beamer from setting fonts
@@ -112,20 +115,25 @@
         \RequirePackage[mathrm=sym]{unicode-math}
         \if@nofonts\else
             \setmainfont{FiraGO}[
-                Path        = ../fonts/,
+                % If relative path is used, path needs to be relative to the main document.
+                % Better to place fonts in texmf/fonts/opentype.
+                % Run "kpsewhich -show-path=.otf" to find path.
+                % Path        = fonts/,
                 Extension   = .otf,
                 UprightFont = *-Regular,
                 ItalicFont  = *-Italic,
                 BoldFont    = *-Bold
             ]
             \setsansfont{FiraGO}[
-                Path        = ../fonts/,
+                % Path        = fonts/,
                 Extension   = .otf,
                 UprightFont = *-Regular,
                 ItalicFont  = *-Italic,
                 BoldFont    = *-Bold
             ]
-            \setmathfont[Path = ../fonts/]{FiraMath-Regular.otf} % Not yet available in light mode
+            \setmathfont{FiraMath-Regular.otf}[
+                % Path = fonts/
+            ] % Not yet available in light mode
         \fi
     \fi
 \else
