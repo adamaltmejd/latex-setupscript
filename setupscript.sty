@@ -508,14 +508,6 @@
     \patchcmd{\slideentry}{\kern\beamer@tempdim}{\advance\beamer@tempdim by 2pt\advance\beamer@tempdim by\wd\beamer@sectionbox\kern\beamer@tempdim}{}{}
     \makeatother
 
-    % Skip headline in env withoutheadline
-    \makeatletter
-    \newenvironment{withoutheadline}{
-        \setbeamertemplate{headline}{}
-        \addtobeamertemplate{frametitle}{\vspace*{-0.70\baselineskip}}{}
-    }{}
-    \makeatother
-
     %%
     % Footline
     \makeatletter
@@ -610,17 +602,6 @@
 \newcommand{\plim}{\mathrm{plim}}
 \newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
 \def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
-
-% Add closing mark to square root signs
-% use \oldsqrt for old behavior
-\LetLtxMacro{\oldsqrt}{\sqrt}
-\renewcommand{\sqrt}[1][\ ]{%
-    \def\DHLindex{#1}\mathpalette\DHLhksqrt}
-\def\DHLhksqrt#1#2{%
-    \setbox0=\hbox{$#1\oldsqrt[\DHLindex]{#2\,}$}\dimen0=\ht0
-    \advance\dimen0-0.2\ht0
-    \setbox2=\hbox{\vrule height\ht0 depth -\dimen0}%
-    {\box0\lower0.71pt\box2}}
 
 %% ##################### END #################################################
 
